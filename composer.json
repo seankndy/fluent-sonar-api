@@ -1,0 +1,33 @@
+{
+    "name": "seankndy/fluent-sonar-api",
+    "description": "A Sonar Software (https://sonar.software) API client with a fluent interface.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sean Kennedy",
+            "email": "sean@kndy.net"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^7.3",
+        "illuminate/pagination": "^8.62",
+        "illuminate/support": "^8.62",
+        "gmostafa/php-graphql-client": "^1.13"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "SeanKndy\\SonarApi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SeanKndy\\SonarApi\\Tests\\": "tests/"
+        }
+    }
+}
