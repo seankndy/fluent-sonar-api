@@ -2,19 +2,9 @@
 
 namespace SeanKndy\SonarApi\Tests\Dummy;
 
-use SeanKndy\SonarApi\Resources\ResourceInterface;
+use SeanKndy\SonarApi\Resources\BaseResource;
 
-class DummyResource implements ResourceInterface
+class DummyResource extends BaseResource
 {
     public string $name;
-
-    public function with(): array
-    {
-        return [];
-    }
-
-    public static function fromJsonObject(object $jsonObject): ResourceInterface
-    {
-        return new self(['name' => '']);
-    }
 }

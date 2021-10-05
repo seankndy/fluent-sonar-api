@@ -3,6 +3,7 @@
 namespace SeanKndy\SonarApi;
 
 use Illuminate\Support\Str;
+use SeanKndy\SonarApi\Exceptions\SonarFormatException;
 use SeanKndy\SonarApi\Mutations\ClientMutator;
 use SeanKndy\SonarApi\Mutations\MutationInterface;
 use SeanKndy\SonarApi\Queries\QueryInterface;
@@ -53,15 +54,19 @@ class Client
     public function __call(string $name, array $args)
     {
         if (isset($this->rootQueryBuilders[$name])) {
-            return (new QueryBuilder(
+            return new QueryBuilder(
                 $this->rootQueryBuilders[$name],
-                Str::snake($name)
-            ))->setClient($this);
+                Str::snake($name),
+                $this
+            );
         }
 
         throw new \Error('Call to undefined method '.self::class.'::'.$name.'()');
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function mutations(): ClientMutator
     {
         return new ClientMutator($this);
@@ -71,6 +76,7 @@ class Client
      * @return mixed
      * @throws SonarHttpException
      * @throws SonarQueryException
+     * @throws SonarFormatException
      */
     public function query(QueryInterface $query)
     {
@@ -100,12 +106,18 @@ class Client
             throw new SonarQueryException("Query returned errors.", $jsonObject->errors);
         }
 
+        if (!isset($jsonObject->data)) {
+            throw new SonarFormatException('Unknown API response formatting.');
+        }
+
         return $jsonObject->data;
     }
 
     /**
      * @throws SonarHttpException
      * @throws SonarQueryException
+     * @return mixed
+     * @codeCoverageIgnore
      */
     public function mutate(MutationInterface $mutation)
     {

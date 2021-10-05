@@ -76,15 +76,17 @@ class QueryBuilder
 
     public function __construct(
         string $resourceClass,
-        string $objectName
+        string $objectName,
+        ?Client $client = null
     ) {
         if (!is_a($resourceClass, ResourceInterface::class, true)) {
-            throw new \InvalidArgumentException("\$resourceClass must implement ".ResourceInterface::class);
+            throw new \InvalidArgumentException("$resourceClass must implement ".ResourceInterface::class);
         }
 
         $this->resource = $resourceClass;
         $this->resourceFieldsAndTypes = Reflection::getResourceProperties($this->resource);
         $this->objectName = $objectName;
+        $this->client = $client;
         $this->with((new $resourceClass())->with());
     }
 
@@ -94,10 +96,11 @@ class QueryBuilder
      * @return ResourceInterface|Collection<int, ResourceInterface>|null
      * @throws \SeanKndy\SonarApi\Exceptions\SonarHttpException
      * @throws \SeanKndy\SonarApi\Exceptions\SonarQueryException
+     * @throws \Exception
      */
     public function get()
     {
-        if (!$this->client) {
+        if (! $this->client) {
             throw new \Exception("Cannot call get() without a client!");
         }
 
@@ -121,9 +124,10 @@ class QueryBuilder
      */
     public function first()
     {
-        if (!$this->many) {
+        if (! $this->many) {
             throw new \Exception("first() cannot be called because of singular query.");
         }
+
         return $this->get()->first();
     }
 
@@ -154,7 +158,7 @@ class QueryBuilder
         ]);
     }
 
-    public function setClient(Client $client): self
+    public function withClient(Client $client): self
     {
         $queryBuilder = clone $this;
         $queryBuilder->client = $client;
@@ -165,7 +169,7 @@ class QueryBuilder
     /**
      * Set if this query will return an array of resources.
      */
-    public function many(bool $many): self
+    public function withMany(bool $many): self
     {
         $queryBuilder = clone $this;
         $queryBuilder->many = $many;
@@ -201,7 +205,7 @@ class QueryBuilder
                     $this->resourceFieldsAndTypes[$relation]->type(),
                     Str::snake($relation),
                     false
-                ))->many($this->resourceFieldsAndTypes[$relation]->arrayOf());
+                ))->withMany($this->resourceFieldsAndTypes[$relation]->arrayOf());
 
                 if (is_callable($closure)) {
                     $relationQueryBuilder = $closure($relationQueryBuilder);
