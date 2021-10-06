@@ -2,7 +2,9 @@
 
 namespace SeanKndy\SonarApi\Tests;
 
+use GuzzleHttp\Middleware as GuzzleMiddleware;
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TransferException;
@@ -79,26 +81,26 @@ class ClientTest extends TestCase
     /** @test */
     public function it_will_send_required_headers_in_query()
     {
-        $apiKey = 'test_api_token';
-
-        $guzzleMock = $this->createMock(GuzzleClient::class);
-        $guzzleMock
-            ->expects($this->once())
-            ->method('request')
-            ->with($this->anything(), $this->anything(), $this->callback(function ($subject) use ($apiKey) {
-                return isset($subject['headers']) && isset($subject['headers']['Authorization'])
-                    && $subject['headers']['Authorization'] == 'Bearer ' . $apiKey &&
-                    isset($subject['headers']['Accept']) && $subject['headers']['Accept'] == 'application/json';
-            }))
-            ->willReturn(new Response(200, [], \json_encode(['data' => []])));
+        $handlerStack = HandlerStack::create(new MockHandler([
+            new Response(200, [], \json_encode(['data' => []]))
+        ]));
+        $container = [];
+        $handlerStack->push(GuzzleMiddleware::history($container));
 
         $client = new Client(
-            $guzzleMock,
-            $apiKey,
+            new GuzzleClient(['handler' => $handlerStack]),
+            'test_api_token',
             'https://dummy.com'
         );
 
         $client->query($this->createMock(QueryInterface::class));
+
+        $this->assertCount(1, $container);
+        $this->assertEquals('POST', $container[0]['request']->getMethod());
+        $this->assertEquals('https://dummy.com/api/graphql', $container[0]['request']->getUri());
+        $this->assertEquals('Bearer test_api_token', $container[0]['request']->getHeaders()['Authorization'][0]);
+        $this->assertEquals('application/json', $container[0]['request']->getHeaders()['Accept'][0]);
+
     }
 
     /** @test */

@@ -77,7 +77,8 @@ class QueryBuilder
     public function __construct(
         string $resourceClass,
         string $objectName,
-        ?Client $client = null
+        ?Client $client = null,
+        self $parentQueryBuilder = null
     ) {
         if (!is_a($resourceClass, ResourceInterface::class, true)) {
             throw new \InvalidArgumentException("$resourceClass must implement ".ResourceInterface::class);
@@ -87,6 +88,7 @@ class QueryBuilder
         $this->resourceFieldsAndTypes = Reflection::getResourceProperties($this->resource);
         $this->objectName = $objectName;
         $this->client = $client;
+        $this->parentQueryBuilder = $parentQueryBuilder;
         $this->with((new $resourceClass())->with());
     }
 
@@ -136,10 +138,11 @@ class QueryBuilder
      *
      * @throws \SeanKndy\SonarApi\Exceptions\SonarHttpException
      * @throws \SeanKndy\SonarApi\Exceptions\SonarQueryException
+     * @throws \Exception
      */
     public function paginate(int $perPage = 25, int $currentPage = 1, string $path = '/'): LengthAwarePaginator
     {
-        if (!$this->many) {
+        if (! $this->many) {
             throw new \Exception("paginate() cannot be called because of singular query.");
         }
 
@@ -148,7 +151,7 @@ class QueryBuilder
         $queryBuilder->paginatePerPage = $perPage;
         $queryBuilder->paginateCurrentPage = $currentPage;
 
-        $response = $queryBuilder->client->query($this->getQuery());
+        $response = $queryBuilder->client->query($queryBuilder->getQuery());
         $pageInfo = $response->{$this->objectName}->page_info;
         $entities = collect($response->{$this->objectName}->entities)
             ->map(fn($entity) => ($this->resource)::fromJsonObject($entity));
@@ -201,17 +204,7 @@ class QueryBuilder
                     throw new \InvalidArgumentException("Relation specified ($relation) is not a valid resource.");
                 }
 
-                $relationQueryBuilder = (new self(
-                    $this->resourceFieldsAndTypes[$relation]->type(),
-                    Str::snake($relation),
-                    false
-                ))->withMany($this->resourceFieldsAndTypes[$relation]->arrayOf());
-
-                if (is_callable($closure)) {
-                    $relationQueryBuilder = $closure($relationQueryBuilder);
-                }
-
-                $queryBuilder->with[$relation] = $relationQueryBuilder;
+                $queryBuilder->with[$relation] = $closure;
             }
         }
 
@@ -226,16 +219,6 @@ class QueryBuilder
         $queryBuilder = clone $this;
 
         $queryBuilder->sortBy = Str::snake($sortBy);
-        return $queryBuilder->sortOrder($sortOrder);
-    }
-
-    /**
-     * Set sorting direction.
-     */
-    public function sortOrder(string $sortOrder): self
-    {
-        $queryBuilder = clone $this;
-
         $queryBuilder->sortOrder = \strtoupper($sortOrder);
 
         return $queryBuilder;
@@ -270,7 +253,7 @@ class QueryBuilder
     {
         $queryBuilder = clone $this;
 
-        if (!$queryBuilder->search) {
+        if (! $queryBuilder->search) {
             $queryBuilder->search = new Search();
         }
 
@@ -281,76 +264,97 @@ class QueryBuilder
 
     /**
      * Specify an OR search filter criteria.
+     * @throws \Exception
      */
     public function orWhere(string $field, ...$args): self
     {
         $queryBuilder = clone $this;
 
-        if (!$queryBuilder->search) {
-            $queryBuilder->search = new Search();
+        if (! $queryBuilder->search) {
+            throw new \Exception("Cannot call orWhere() before where()!");
         }
 
         $queryBuilder->search = $queryBuilder->search->orWhere(Str::snake($field), ...$args);
 
-        return $this;
+        return $queryBuilder;
     }
 
     /**
      * Get Query instance suitable for execution by Client.
      */
-    public function getQuery(bool $root = true): Query
+    public function getQuery(): Query
     {
-        $queryBuilder = new \GraphQL\QueryBuilder\QueryBuilder($this->objectName);
+        // clone the root query builder because we will be mutating it with declareVariable() and we do not
+        // want this to happen on the caller's instance.
+        $queryBuilder = $this->isRoot() ? clone $this : $this;
+        $graphQueryBuilder = new \GraphQL\QueryBuilder\QueryBuilder($queryBuilder->objectName);
 
         $variables = [];
         $manySelectionSet = [];
 
-        foreach ($this->resourceFieldsAndTypes as $field => $type) {
-            if ($this->only && !\in_array($field, $this->only)) {
+        foreach ($queryBuilder->resourceFieldsAndTypes as $field => $type) {
+            if ($queryBuilder->only && !\in_array($field, $queryBuilder->only)) {
                 continue;
             }
 
             if ($type->isResource()) {
-                if (!isset($this->with[$field])) {
+                if (!isset($queryBuilder->with[$field])) {
                     continue;
                 }
 
-                $relationQuery = $this->with[$field]->getQuery(false);
+                $relationQueryBuilder = (new self(
+                    $type->type(),
+                    Str::snake($field),
+                    null,
+                    $queryBuilder
+                ))->withMany($type->arrayOf());
+
+                if (\is_callable($queryBuilder->with[$field])) {
+                    $relationQueryBuilder = ($queryBuilder->with[$field])($relationQueryBuilder);
+                }
+
+                $relationQuery = $relationQueryBuilder->getQuery();
                 $select = $relationQuery->query();
                 $variables = \array_merge($variables, $relationQuery->variables());
             } else {
                 $select = Str::snake($field);
             }
 
-            if ($this->many) {
+            if ($queryBuilder->many) {
                 $manySelectionSet[] = $select;
             } else {
-                $queryBuilder->selectField($select);
+                $graphQueryBuilder->selectField($select);
             }
         }
 
         if ($manySelectionSet) {
-            $queryBuilder->selectField(
+            $graphQueryBuilder->selectField(
                 (new \GraphQL\Query('entities'))->setSelectionSet($manySelectionSet)
             );
         }
 
-        if ($this->search) {
-            $queryBuilder->setArgument('search', '$'.$this->getGraphQueryVariableName('search'));
+        if ($queryBuilder->search) {
+            $queryBuilder->declareVariable($this->getGraphQueryVariableName('search'), '[Search]');
 
-            $variables[$this->objectName.'_search'] = $this->search->toArray();
+            $graphQueryBuilder->setArgument('search', '$'.$queryBuilder->getGraphQueryVariableName('search'));
+
+            $variables[$queryBuilder->objectName.'_search'] = $queryBuilder->search->toArray();
         }
-        if ($this->sortBy) {
-            $queryBuilder->setArgument('sorter', ['$'.$this->getGraphQueryVariableName('sorter')]);
+        if ($queryBuilder->sortBy) {
+            $queryBuilder->declareVariable($this->getGraphQueryVariableName('sorter'), 'Sorter');
 
-            $variables[$this->objectName.'_sorter'] = [
-                'attribute' => $this->sortBy,
-                'direction' => $this->sortOrder,
+            $graphQueryBuilder->setArgument('sorter', ['$'.$queryBuilder->getGraphQueryVariableName('sorter')]);
+
+            $variables[$queryBuilder->objectName.'_sorter'] = [
+                'attribute' => $queryBuilder->sortBy,
+                'direction' => $queryBuilder->sortOrder,
             ];
         }
-        if ($this->paginate) {
-            $queryBuilder
-                ->setArgument('paginator', '$'.$this->getGraphQueryVariableName('paginator'))
+        if ($queryBuilder->paginate) {
+            $queryBuilder->declareVariable($this->getGraphQueryVariableName('paginator'), 'Paginator');
+
+            $graphQueryBuilder
+                ->setArgument('paginator', '$'.$queryBuilder->getGraphQueryVariableName('paginator'))
                 ->selectField(
                     (new \GraphQL\Query('page_info'))
                     ->setSelectionSet([
@@ -360,44 +364,19 @@ class QueryBuilder
                     ])
                 );
 
-            $variables[$this->objectName.'_paginator'] = [
-                'page' => $this->paginateCurrentPage,
-                'records_per_page' => $this->paginatePerPage,
+            $variables[$queryBuilder->objectName.'_paginator'] = [
+                'page' => $queryBuilder->paginateCurrentPage,
+                'records_per_page' => $queryBuilder->paginatePerPage,
             ];
         }
 
-        if ($root) {
-            foreach ($this->graphQueryVariableDeclarations() as $variableDeclaration) {
-                $queryBuilder->setVariable(...$variableDeclaration);
+        if ($queryBuilder->isRoot()) {
+            foreach ($queryBuilder->declaredVariables as $declaredVariable) {
+                $graphQueryBuilder->setVariable(...$declaredVariable);
             }
         }
 
-        return new Query($queryBuilder->getQuery(), $variables);
-    }
-
-    /**
-     * Return the variable declarations for this query builder.  This is used by getQuery() to
-     * compile a list of variable declarations across all levels of builders and then apply to
-     * the root query builder as that is where variable declarations reside in GraphQL.
-     */
-    public function graphQueryVariableDeclarations(array $carry = []): array
-    {
-        $variables = $carry;
-
-        if ($this->search) {
-            $variables[] = [$this->getGraphQueryVariableName('search'), '[Search]'];
-        }
-        if ($this->sortBy) {
-            $variables[] = [$this->getGraphQueryVariableName('sorter'), 'Sorter'];
-        }
-        if ($this->paginate) {
-            $variables[] = [$this->getGraphQueryVariableName('paginator'), 'Paginator'];
-        }
-        foreach ($this->with as $relationQueryBuilder) {
-            $variables = \array_merge($variables, $relationQueryBuilder->graphQueryVariableDeclarations());
-        }
-
-        return $variables;
+        return new Query($graphQueryBuilder->getQuery(), $variables);
     }
 
     public function __clone()
@@ -407,14 +386,46 @@ class QueryBuilder
         }
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getResource(): string
     {
         return $this->resource;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getObjectName(): string
     {
         return $this->objectName;
+    }
+
+    /**
+     * Declare variable on the root query builder as that is where variable declarations belong in GraphQL.
+     */
+    private function declareVariable(string $name, string $type, bool $isRequired = false, $defaultValue = null): void
+    {
+        if ($this->parentQueryBuilder) {
+            $this->getRootQueryBuilder()->declareVariable($name, $type, $isRequired, $defaultValue);
+        } else {
+            $this->declaredVariables[] = [$name, $type, $isRequired, $defaultValue];
+        }
+    }
+
+    private function getRootQueryBuilder()
+    {
+        if ($this->isRoot()) {
+            return $this;
+        }
+
+        return $this->parentQueryBuilder->getRootQueryBuilder();
+    }
+
+    private function isRoot()
+    {
+        return $this->parentQueryBuilder === null;
     }
 
     private function getGraphQueryVariableName(string $variable): string

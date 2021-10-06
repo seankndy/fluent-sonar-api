@@ -6,5 +6,11 @@ use SeanKndy\SonarApi\Resources\BaseResource;
 
 class DummyResource extends BaseResource
 {
-    public string $name;
+    public ?int $id;
+
+    public ?string $name;
+
+    public ?\DateTime $someDateTime;
+
+    public ?AnotherDummyResource $anotherDummyResource;
 }
