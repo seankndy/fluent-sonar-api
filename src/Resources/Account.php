@@ -19,6 +19,11 @@ class Account extends BaseResource
     public \DateTime $updatedAt;
 
     /**
+     * @var \SeanKndy\SonarApi\Resources\Account[]
+     */
+    public array $childAccounts;
+
+    /**
      * @var \SeanKndy\SonarApi\Resources\AccountGroup[]
      */
     public array $accountGroups;
@@ -90,6 +95,9 @@ class Account extends BaseResource
         return null;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function __toString(): string
     {
         return $this->name .

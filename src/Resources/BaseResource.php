@@ -21,6 +21,9 @@ abstract class BaseResource implements ResourceInterface
         }
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function with(): array
     {
         return [];
@@ -39,17 +42,21 @@ abstract class BaseResource implements ResourceInterface
             $jsonVar = Str::snake($field);
 
             if (property_exists($jsonObject, $jsonVar)) {
-                if ($type->arrayOf()) {
-                    $data[$field] = \array_map(
-                        fn($entity) => ($type->type())::fromJsonObject($entity),
-                        $jsonObject->$jsonVar->entities
-                    );
+                if ($type->isResource() && $type->arrayOf()) {
+                    if (isset($jsonObject->$jsonVar->entities) && $jsonObject->$jsonVar->entities) {
+                        $data[$field] = \array_map(
+                            fn($entity) => ($type->type())::fromJsonObject($entity),
+                            $jsonObject->$jsonVar->entities
+                        );
+                    } else {
+                        $data[$field] = [];
+                    }
                 } else if (is_a($type->type(), \DateTime::class, true)) {
                     $data[$field] = $jsonObject->$jsonVar ? new \DateTime($jsonObject->$jsonVar) : null;
                 } else if (is_a($type->type(), Type::class, true)) {
                     $typeClass = $type->type();
                     $data[$field] = $jsonObject->$jsonVar ? new $typeClass($jsonObject->$jsonVar) : null;
-                } else if (is_a($type->type(), ResourceInterface::class, true) && $jsonObject->$jsonVar) {
+                } else if ($type->isResource() && $jsonObject->$jsonVar) {
                     $data[$field] = ($type->type())::fromJsonObject($jsonObject->$jsonVar);
                 } else {
                     $data[$field] = $jsonObject->$jsonVar;
