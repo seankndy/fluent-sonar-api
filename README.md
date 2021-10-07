@@ -36,7 +36,7 @@ Relations are not queried by default and you must use the `with()` method to sta
 $accounts = $client
     ->accounts()
     ->with([
-	    'tickets' => fn($query) => $query->sortBy('createdAt', 'ASC),
+        'tickets' => fn($query) => $query->sortBy('createdAt', 'ASC),
     ])
     ->where('id', 1234)
     ->get();
