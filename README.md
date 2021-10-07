@@ -2,6 +2,7 @@
 
 This is a Sonar Software (https://sonar.software) v2 GraphQL PHP API client with a fluent interface.  It aims to make your common fetch queries and mutations simple and somewhat Laravel Eloquent-like.
 
+A key benefit to using this library is that the resources, mutations, and inputs are wrapped in real PHP objects allowing static analyzers to assist in preventing bugs and your IDE can do code completions.
 
 # Queries
 
@@ -104,35 +105,20 @@ use SeanKndy\SonarApi\Resources\BaseResource;
 class Company extends BaseResource
 {
     public int $id;  
-  
     public string $name;  
-  
     public string $checksPayableTo;  
-  
     public string $country;  
-  
     public string $phoneNumber;  
-  
     public string $primaryColor;  
-  
     public string $secondaryColor;  
-  
     public ?string $customerPortalUrl;  
-  
     public bool $default;  
-  
     public bool $enabled;  
-  
     public bool $showRemittanceSlip;  
-  
-    public ?string $websiteAddress;  
-  
-    public ?string $taxIdentification;  
-  
-    public \DateTime $createdAt;  
-  
+    public ?string $websiteAddress;
+    public ?string $taxIdentification;
+    public \DateTime $createdAt;
     public \DateTime $updatedAt; 
-
     /**
      * @var \SeanKndy\SonarApi\Resources\Account[]
      * /
@@ -183,6 +169,7 @@ Mutation classes implement the `\SeanKndy\SonarApi\Mutations\MutationInterface` 
 namespace App\Support\SonarApi\Mutations;
 
 use SeanKndy\SonarApi\Mutations\BaseMutation;
+use SeanKndy\SonarApi\Types\Int64Bit;
 use App\Support\SonarApi\Mutations\Inputs\UpdateTicketMutationInput;
 
 //
@@ -208,6 +195,8 @@ class UpdateTicket extends BaseMutation
     }
 }
 ```
+
+You'll notice that `$id` is hinted to the `SeanKndy\SonarApi\Types\Int64Bit` class.  This is a wrapper type object which mocks the type within Sonar's GraphQL schema.
 
 Sonar has many MutationInput objects which are basically DTOs and such as the 	`UpdateTicketMutationInput` referenced above.   These can be created easily by extending `SeanKndy\SonarApi\Mutations\Inputs\BaseInput`:
 
