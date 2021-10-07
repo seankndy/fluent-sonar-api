@@ -29,20 +29,54 @@ $accounts = $client
 
 Objects returned from Sonar's API need to be mapped to real PHP objects that the library refers to as Resources.  Several core Sonar objects are included in this library in the `\SeanKndy\SonarApi\Resources`  namespace and you may [create your own](#creating-resource-objects) object resources by extending `\SeanKndy\SonarApi\Resources\BaseResource`.
 
-Relations are not queried by default and you must use the `with()` method to state which relations you want to load.  If you want to filter or sort the related resources you can do so with a closure:
+Relations are not queried by default and you must use the `with()` method to state which relations you want to load (as done above).  If you want to filter or sort the related resources you can do so with a closure:
 
 ```
 <?php
 $accounts = $client
     ->accounts()
     ->with([
-	      'tickets' => fn($query) => $query->sortBy('createdAt', 'ASC),
+	    'tickets' => fn($query) => $query->sortBy('createdAt', 'ASC),
     ])
     ->where('id', 1234)
     ->get();
 ```
 
 In the above example, tickets will be sorted ascending by the `created_at` field.
+
+The following top level objects are supported by `Client` out of the box:
+
+```
+   companies()
+   accounts()
+   tickets()
+   contacts()
+   jobs()
+   jobTypes()
+   services()
+   users()
+```
+
+You may extend and/or override these by passing a fourth argument to `Client`'s constructor:
+
+```
+<?php
+
+namespace App;
+
+use SeanKndy\SonarApi\Client;
+use GuzzleHttp\Client as GuzzleClient;
+use App\Support\SonarApi\Resources\Invoice;
+
+$client = new Client(
+    new GuzzleClient(),
+    '<your api key>',
+    'https://your-sonar-instance.sonar.software',
+    [
+        'invoices' => Invoice::class,
+    ],
+);
+```
 
 # Pagination
 
