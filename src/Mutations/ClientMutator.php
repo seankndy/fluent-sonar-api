@@ -13,7 +13,7 @@ class ClientMutator
         $this->client = $client;
     }
 
-    public function run(MutationInterface $mutation)
+    public function run(BaseMutation $mutation)
     {
         $response = $this->client->mutate($mutation);
 
