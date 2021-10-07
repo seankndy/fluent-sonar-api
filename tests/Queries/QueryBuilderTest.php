@@ -505,21 +505,12 @@ class QueryBuilderTest extends TestCase
             ])
             ->where('id', 1);
 
-        if (preg_match('/query\((.+?)\)/', $queryBuilder->getQuery()->query(), $m)) {
-            $words = preg_split('/\s+/', $m[1]);
-            $variables = [];
-            for ($i = 0; $i < \count($words); $i += 2) {
-                $variables[] = str_replace(['$', ':'], '', $words[$i]);
-            }
-
-            $this->assertEqualsCanonicalizing([
-                'dummies_search',
-                'another_dummy_resource_sorter',
-                'and_another_dummy_resources_search',
-            ], $variables);
-        } else {
-            $this->fail('Could not find any variables in root query element!');
-        }
+        $variables = $this->getGraphQlQueryVariableDeclarations($queryBuilder->getQuery()->query());
+        $this->assertEqualsCanonicalizing([
+            'dummies_search',
+            'another_dummy_resource_sorter',
+            'and_another_dummy_resources_search',
+        ], \array_keys($variables));
 
         $variables = $queryBuilder->getQuery()->variables();
         $this->assertArrayHasKey('dummies_search', $variables);

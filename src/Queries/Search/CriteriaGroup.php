@@ -21,13 +21,6 @@ class CriteriaGroup
         return $this;
     }
 
-    public function addCriteria(CriteriaInterface $criteria): self
-    {
-        $this->criterias[] = $criteria;
-
-        return $this;
-    }
-
     public function getCriterias(): array
     {
         return $this->criterias;

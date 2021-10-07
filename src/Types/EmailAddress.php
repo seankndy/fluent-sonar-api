@@ -2,12 +2,9 @@
 
 namespace SeanKndy\SonarApi\Types;
 
-class EmailAddress extends Type
+class EmailAddress extends BaseType
 {
-    /**
-     * @var string
-     */
-    protected $value;
+    private string $value;
 
     public function __construct(string $value)
     {
@@ -16,5 +13,10 @@ class EmailAddress extends Type
         }
 
         $this->value = $value;
+    }
+
+    public function value(): string
+    {
+        return $this->value;
     }
 }

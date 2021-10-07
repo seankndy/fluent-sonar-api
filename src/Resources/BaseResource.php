@@ -4,9 +4,10 @@ namespace SeanKndy\SonarApi\Resources;
 
 use SeanKndy\SonarApi\Queries\QueryBuilder;
 use SeanKndy\SonarApi\Resources\Reflection\Reflection;
-use SeanKndy\SonarApi\Types\Type;
+use SeanKndy\SonarApi\Types\BaseType;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use SeanKndy\SonarApi\Types\TypeInterface;
 
 abstract class BaseResource implements ResourceInterface
 {
@@ -53,7 +54,7 @@ abstract class BaseResource implements ResourceInterface
                     }
                 } else if (is_a($type->type(), \DateTime::class, true)) {
                     $data[$field] = $jsonObject->$jsonVar ? new \DateTime($jsonObject->$jsonVar) : null;
-                } else if (is_a($type->type(), Type::class, true)) {
+                } else if (is_a($type->type(), TypeInterface::class, true)) {
                     $typeClass = $type->type();
                     $data[$field] = $jsonObject->$jsonVar ? new $typeClass($jsonObject->$jsonVar) : null;
                 } else if ($type->isResource() && $jsonObject->$jsonVar) {

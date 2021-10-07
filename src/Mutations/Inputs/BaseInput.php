@@ -5,7 +5,7 @@ namespace SeanKndy\SonarApi\Mutations\Inputs;
 use Illuminate\Support\Str;
 
 /**
- * Child classes must define their properties as protected or private so that BaseInput can control setting the values
+ * Child classes must define their properties as protected so that BaseInput can control setting the values
  * and determine which properties to send in the mutation.
  *
  */
@@ -14,10 +14,10 @@ abstract class BaseInput implements Input
 {
     protected array $declared = [];
 
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
         if ((new \ReflectionClass($this))->getProperties(\ReflectionProperty::IS_PUBLIC)) {
-            throw new \Exception(get_class($this) . " has public properties defined and this is not allowed.");
+            throw new \RuntimeException(get_class($this) . " has public properties defined and this is not allowed.");
         }
 
         foreach ($data as $key => $value) {

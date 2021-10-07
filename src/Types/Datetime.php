@@ -2,24 +2,17 @@
 
 namespace SeanKndy\SonarApi\Types;
 
-use Carbon\Carbon;
-
-class Datetime extends Type
+class Datetime extends BaseType
 {
-    /**
-     * @var Carbon
-     */
-    protected $value;
+    private \DateTime $value;
 
     public function __construct(string $value)
     {
-        $this->value = new Carbon($value);
+        $this->value = new \DateTime($value);
     }
 
-    public function __get(string $var)
+    public function value(): string
     {
-        $value = parent::__get($var);
-
-        return $value->toIso8601String();
+        return $this->value->format(\DateTimeInterface::ISO8601);
     }
 }

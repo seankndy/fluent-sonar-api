@@ -2,10 +2,11 @@
 
 namespace SeanKndy\SonarApi\Mutations;
 
+use Illuminate\Support\Str;
 use SeanKndy\SonarApi\Mutations\Inputs\Input;
 use SeanKndy\SonarApi\Queries\QueryBuilder;
-use SeanKndy\SonarApi\Types\Type;
 use GraphQL\Variable;
+use SeanKndy\SonarApi\Types\TypeInterface;
 
 abstract class BaseMutation implements MutationInterface
 {
@@ -25,7 +26,7 @@ abstract class BaseMutation implements MutationInterface
             } else {
                 $variables[] = new Variable(
                     $var,
-                    $value instanceof Type ? $value->name() : \ucfirst(gettype($value)),
+                    $value instanceof TypeInterface ? $value->name() : \ucfirst(gettype($value)),
                     $required
                 );
             }
@@ -38,7 +39,7 @@ abstract class BaseMutation implements MutationInterface
             ->setSelectionSet(
             $this->returnResource()
                 ? (new QueryBuilder($this->returnResource(), ''))
-                    ->many(false)
+                    ->withMany(false)
                     ->getQuery()
                     ->query()
                     ->getSelectionSet()
@@ -53,7 +54,7 @@ abstract class BaseMutation implements MutationInterface
             if ($value instanceof Input) {
                 $variables[$var] = $value->toArray();
             } else {
-                $variables[$var] = $value instanceof Type ? $value->value : $value;
+                $variables[$var] = $value instanceof TypeInterface ? $value->value() : $value;
             }
         }
         return $variables;
@@ -64,7 +65,7 @@ abstract class BaseMutation implements MutationInterface
      */
     public function name(): string
     {
-        return lcfirst((new \ReflectionClass(static::class))->getShortName());
+        return Str::camel((new \ReflectionClass(static::class))->getShortName());
     }
 
     abstract public function returnResource(): ?string;

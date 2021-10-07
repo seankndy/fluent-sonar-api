@@ -65,7 +65,7 @@ class BaseResourceTest extends TestCase
         $this->assertInstanceOf(\DateTime::class, $resource->dateTime);
         $this->assertEquals('2021-10-06T21:10:24+00:00', $resource->dateTime->format(\DateTime::ATOM));
         $this->assertInstanceOf(EmailAddress::class, $resource->emailAddress);
-        $this->assertEquals('john@test.com', $resource->emailAddress->value);
+        $this->assertEquals('john@test.com', $resource->emailAddress->value());
         $this->assertEquals(['one', 'two', 'three'], $resource->arrayOfValues);
         $this->assertEquals(100, $resource->anotherConcreteResources[0]->id);
         $this->assertEquals('Jane Doe', $resource->anotherConcreteResources[0]->name);
@@ -88,7 +88,7 @@ class BaseResourceTest extends TestCase
 
         $this->assertEquals(1234, $resource->id);
         $this->assertInstanceOf(EmailAddress::class, $resource->emailAddress);
-        $this->assertEquals('john@test.com', $resource->emailAddress->value);
+        $this->assertEquals('john@test.com', $resource->emailAddress->value());
         $this->assertNull($resource->anotherConcreteResource);
     }
 

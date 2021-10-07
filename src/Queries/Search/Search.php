@@ -65,7 +65,7 @@ class Search
     public function orWhere(string $field, ...$args): self
     {
         if (!$this->whereCriteriaGroups) {
-            throw new \RuntimeException('You cannot call orWhere() before where()');
+            throw new \RuntimeException('You cannot call orWhere() before where()!');
         }
 
         if (!($operatorAndValue = $this->getOperatorAndValue($args))) {
