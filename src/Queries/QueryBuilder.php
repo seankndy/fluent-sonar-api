@@ -379,13 +379,6 @@ class QueryBuilder
         return new Query($graphQueryBuilder->getQuery(), $variables);
     }
 
-    public function __clone()
-    {
-        if ($this->search) {
-            $this->search = clone $this->search;
-        }
-    }
-
     /**
      * @codeCoverageIgnore
      */
