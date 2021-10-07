@@ -12,9 +12,9 @@
     "require": {
         "php": ">=7.4",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^7.3",
-        "illuminate/pagination": "^8.62",
-        "illuminate/support": "^8.62",
+        "guzzlehttp/guzzle": ">=6.0",
+        "illuminate/pagination": ">=5.0",
+        "illuminate/support": ">=5.0",
         "gmostafa/php-graphql-client": "^1.13"
     },
     "require-dev": {

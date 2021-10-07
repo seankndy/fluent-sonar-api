@@ -165,7 +165,7 @@ class QueryBuilderTest extends TestCase
         $this->assertEquals(3, $paginator->currentPage());
         $this->assertEquals(6, $paginator->total());
         $this->assertEquals(2, $paginator->perPage());
-        $this->assertEquals('https://test.local/some/path', $paginator->path());
+        $this->assertEquals('https://test.local/some/path', $paginator->toArray()['path']);
         $data = $paginator->toArray()['data'];
         $this->assertInstanceOf(DummyResource::class, $data[0]);
         $this->assertInstanceOf(DummyResource::class, $data[1]);
