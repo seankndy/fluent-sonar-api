@@ -1,10 +1,10 @@
 <?php
 
-namespace SeanKndy\SonarApi\Resources\Reflection;
+namespace SeanKndy\SonarApi\Reflection;
 
 use SeanKndy\SonarApi\Resources\ResourceInterface;
 
-class FieldType
+class PropertyType
 {
     private string $type;
 

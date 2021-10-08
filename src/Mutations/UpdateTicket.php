@@ -22,9 +22,9 @@ class UpdateTicket extends BaseMutation
         $this->input = $input;
     }
 
-     public function returnResource(): ?string
-     {
-         return Ticket::class;
-     }
+    public function returnResource(): ?string
+    {
+        return Ticket::class;
+    }
 
 }

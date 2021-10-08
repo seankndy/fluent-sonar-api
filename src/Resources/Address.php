@@ -12,9 +12,9 @@ class Address extends BaseResource
 
     public ?string $line2;
 
-    public string $city;
+    public ?string $city;
 
-    public string $zip;
+    public ?string $zip;
 
     public ?string $latitude;
 

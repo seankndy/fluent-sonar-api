@@ -3,7 +3,7 @@
 namespace SeanKndy\SonarApi\Resources;
 
 use SeanKndy\SonarApi\Queries\QueryBuilder;
-use SeanKndy\SonarApi\Resources\Reflection\Reflection;
+use SeanKndy\SonarApi\Reflection\Reflection;
 use SeanKndy\SonarApi\Types\BaseType;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -39,7 +39,7 @@ abstract class BaseResource implements ResourceInterface
     {
         $data = [];
 
-        foreach (Reflection::getResourceProperties(static::class) as $field => $type) {
+        foreach (Reflection::getPropertiesAndTypes(static::class) as $field => $type) {
             $jsonVar = Str::snake($field);
 
             if (property_exists($jsonObject, $jsonVar)) {

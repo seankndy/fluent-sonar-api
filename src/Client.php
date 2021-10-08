@@ -15,6 +15,7 @@ use SeanKndy\SonarApi\Resources\Company;
 use SeanKndy\SonarApi\Resources\Contact;
 use SeanKndy\SonarApi\Resources\Job;
 use SeanKndy\SonarApi\Resources\JobType;
+use SeanKndy\SonarApi\Resources\NetworkSite;
 use SeanKndy\SonarApi\Resources\Service;
 use SeanKndy\SonarApi\Resources\Ticket;
 use GuzzleHttp\ClientInterface as GuzzleClientInterface;
@@ -44,6 +45,11 @@ class Client
             'accounts' => Account::class,
             'tickets' => Ticket::class,
             'contacts' => Contact::class,
+            'networkSites' => NetworkSite::class,
+
+
+
+
             'jobs' => Job::class,
             'jobTypes' => JobType::class,
             'services' => Service::class,

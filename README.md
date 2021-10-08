@@ -52,6 +52,7 @@ The following top level objects are supported by `Client` out of the box:
    accounts()
    tickets()
    contacts()
+   networkSites()
    jobs()
    jobTypes()
    services()

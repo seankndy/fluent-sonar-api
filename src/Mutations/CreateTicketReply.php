@@ -17,9 +17,9 @@ class CreateTicketReply extends BaseMutation
         $this->input = $input;
     }
 
-     public function returnResource(): ?string
-     {
-         return TicketReply::class;
-     }
+    public function returnResource(): ?string
+    {
+        return TicketReply::class;
+    }
 
 }

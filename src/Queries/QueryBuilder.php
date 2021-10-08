@@ -4,7 +4,7 @@ namespace SeanKndy\SonarApi\Queries;
 
 use SeanKndy\SonarApi\Client;
 use SeanKndy\SonarApi\Queries\Search\Search;
-use SeanKndy\SonarApi\Resources\Reflection\Reflection;
+use SeanKndy\SonarApi\Reflection\Reflection;
 use SeanKndy\SonarApi\Resources\ResourceInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -85,7 +85,7 @@ class QueryBuilder
         }
 
         $this->resource = $resourceClass;
-        $this->resourceFieldsAndTypes = Reflection::getResourceProperties($this->resource);
+        $this->resourceFieldsAndTypes = Reflection::getPropertiesAndTypes($this->resource);
         $this->objectName = $objectName;
         $this->client = $client;
         $this->parentQueryBuilder = $parentQueryBuilder;
@@ -108,7 +108,7 @@ class QueryBuilder
 
         $response = $this->client->query($this->getQuery());
 
-        if (!$this->many) {
+        if (! $this->many) {
             return $response->{$this->objectName}
                 ? ($this->resource)::fromJsonObject($response->{$this->objectName})
                 : null;
