@@ -6,6 +6,9 @@ class Date extends BaseType
 {
     private \DateTime $value;
 
+    /**
+     * @throws \Exception
+     */
     public function __construct(string $value)
     {
         $this->value = new \DateTime($value);

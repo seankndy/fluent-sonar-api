@@ -5,6 +5,9 @@ namespace SeanKndy\SonarApi\Mutations;
 use SeanKndy\SonarApi\Mutations\Inputs\CreateTicketReplyMutationInput;
 use SeanKndy\SonarApi\Resources\TicketReply;
 
+/**
+ * @codeCoverageIgnore
+ */
 class CreateTicketReply extends BaseMutation
 {
     public CreateTicketReplyMutationInput $input;

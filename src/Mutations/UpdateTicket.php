@@ -7,6 +7,9 @@ use SeanKndy\SonarApi\Mutations\Inputs\UpdateTicketMutationInput;
 use SeanKndy\SonarApi\Resources\Ticket;
 use SeanKndy\SonarApi\Types\Int64Bit;
 
+/**
+ * @codeCoverageIgnore
+ */
 class UpdateTicket extends BaseMutation
 {
     public Int64Bit $id;
