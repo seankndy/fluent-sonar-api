@@ -2,7 +2,7 @@
 
 This is a Sonar Software (https://sonar.software) v2 GraphQL PHP API client with a fluent interface.  It aims to make your common fetch queries and mutations simple and somewhat Laravel Eloquent-like.
 
-A key benefit to using this library is that the resources, mutations, and inputs are wrapped in real PHP objects allowing static analyzers to assist in preventing bugs and your IDE can do code completions.
+A key benefit to using this library is that the resources and inputs are wrapped in real PHP objects allowing static analyzers to assist in preventing bugs and your IDE can do code completions.
 
 # Queries
 
@@ -37,7 +37,7 @@ Relations are not queried by default and you must use the `with()` method to sta
 $accounts = $client
     ->accounts()
     ->with([
-        'tickets' => fn($query) => $query->sortBy('createdAt', 'ASC),
+        'tickets' => fn($query) => $query->sortBy('createdAt', 'ASC'),
     ])
     ->where('id', 1234)
     ->get();
@@ -133,13 +133,14 @@ A has-one relationship should be specified with the resource object such as `pub
 
 # Mutations
 
-Here is an example of running a mutation using some of the built-in mutation inputs provided by the library:
+Here is an example of running a mutation using one of the built-in mutation inputs provided by the library:
 
 ```
 <?php
 use SeanKndy\SonarApi\Client;
 use SeanKndy\SonarApi\Resources\Ticket;
 use SeanKndy\SonarApi\Types\Int64Bit;
+use SeanKndy\SonarApi\Mutations\Inputs\UpdateTicketMutationInput;
 use GuzzleHttp\Client as GuzzleClient;
 
 $client = new Client(
