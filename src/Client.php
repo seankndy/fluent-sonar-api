@@ -5,6 +5,7 @@ namespace SeanKndy\SonarApi;
 use Illuminate\Support\Str;
 use SeanKndy\SonarApi\Exceptions\SonarFormatException;
 use SeanKndy\SonarApi\Mutations\ClientMutator;
+use SeanKndy\SonarApi\Mutations\MutationBuilder;
 use SeanKndy\SonarApi\Mutations\MutationInterface;
 use SeanKndy\SonarApi\Queries\QueryInterface;
 use SeanKndy\SonarApi\Queries\QueryBuilder;
@@ -46,10 +47,6 @@ class Client
             'tickets' => Ticket::class,
             'contacts' => Contact::class,
             'networkSites' => NetworkSite::class,
-
-
-
-
             'jobs' => Job::class,
             'jobTypes' => JobType::class,
             'services' => Service::class,
@@ -73,9 +70,9 @@ class Client
     /**
      * @codeCoverageIgnore
      */
-    public function mutations(): ClientMutator
+    public function mutations(): MutationBuilder
     {
-        return new ClientMutator($this);
+        return new MutationBuilder($this);
     }
 
     /**

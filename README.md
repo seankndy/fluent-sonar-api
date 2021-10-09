@@ -133,11 +133,13 @@ A has-one relationship should be specified with the resource object such as `pub
 
 # Mutations
 
-Mutations are mapped to PHP objects just like queried resources are.  There are tons of mutations so you will probably have to write your own mutation class, but its straightforward.  Here is an example of running a mutation using one of the built in mutations provided by the library:
+Here is an example of running a mutation using some of the built-in mutation inputs provided by the library:
 
 ```
 <?php
 use SeanKndy\SonarApi\Client;
+use SeanKndy\SonarApi\Resources\Ticket;
+use SeanKndy\SonarApi\Types\Int64Bit;
 use GuzzleHttp\Client as GuzzleClient;
 
 $client = new Client(
@@ -148,58 +150,25 @@ $client = new Client(
 
 $ticket = $client
     ->mutations()
-    ->run(new CreatePublicTicket(
-        new CreatePublicTicketMutationInput([
-            'subject' => 'A ticket subject',
-            'description' => 'A ticket description.',
-            'status' => 'OPEN',
-            'priority' => 'HIGH',
-            'ticketableId' => 12345,
-            'ticketableType' => 'Account',
-            'inboundMailboxId' => 1,
+    ->updateTicket([
+        'id!' => Int64Bit(12345),
+        'input' => new UpdateTicketMutationInput([
+            'subject' => 'An updated ticket subject',
         ])
-    ));
+    ])
+    ->return(Ticket::class)
+    ->run()
  
 // $ticket will be an instance of newly created \SeanKndy\SonarApi\Resources\Ticket object
 ```
-Mutation classes implement the `\SeanKndy\SonarApi\Mutations\MutationInterface` interface.  You may instead just extend `\SeanKndy\SonarApi\Mutations\BaseMutation` which implements `MutationInterface` and builds the GraphQL mutation query and variables for you based on the your classes name, public properties and a `returnResource()` method you must implement.  Here is an example of extending `BaseMutation`:
 
-```
-<?php
+Mutations are built by just calling the mutation name on the `MutationQueryBuilder` which is returned by the `mutations()` method on the client.  Simply pass in the variables/argument as an associative array to the mutation name method call.  Variables that are required should have an exclamation (!) after the variable name like `id!` in the above example.
 
-namespace App\Support\SonarApi\Mutations;
+The `return()` method indicates what resource should be returned by the mutation.  Again, view Sonar's documentation to view each mutation's return type.
 
-use SeanKndy\SonarApi\Mutations\BaseMutation;
-use SeanKndy\SonarApi\Types\Int64Bit;
-use App\Support\SonarApi\Mutations\Inputs\UpdateTicketMutationInput;
+You'll notice that `id` is an instance of `\SeanKndy\SonarApi\Types\Int64Bit`.  This is a wrapper type object which mocks the type within Sonar's GraphQL schema and is required for this mutation.  See Sonar's API documentation (https://api.sonar.software) to view any mutation's specifications.
 
-//
-// Because class is named UpdateTicket the mutation method run in GraphQL will be
-// updateTicket() by default, but you can override `name()` to change that.
-//
-class UpdateTicket extends BaseMutation
-{
-    public Int64Bit $id;  
-  
-    public UpdateTicketMutationInput $input;  
-  
-    public function __construct(Int64Bit $id, UpdateTicketMutationInput $input)  
-    {  
-        $this->id = $id;  
-        $this->input = $input;  
-    }  
-    
-    public function returnResource(): ?string  
-    {
-        // the resource to return from the mutation
-        return Ticket::class;  
-    }
-}
-```
-
-You'll notice that `$id` is hinted to the `SeanKndy\SonarApi\Types\Int64Bit` class.  This is a wrapper type object which mocks the type within Sonar's GraphQL schema.
-
-Sonar has many MutationInput objects which are basically DTOs and such as the 	`UpdateTicketMutationInput` referenced above.   These can be created easily by extending `SeanKndy\SonarApi\Mutations\Inputs\BaseInput`:
+Sonar has many MutationInput objects which are basically DTOs and such is the `UpdateTicketMutationInput` referenced above.   These can be created easily by extending `SeanKndy\SonarApi\Mutations\Inputs\BaseInput`:
 
 ```
 <?php

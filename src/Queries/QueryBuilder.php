@@ -89,7 +89,6 @@ class QueryBuilder
         $this->objectName = $objectName;
         $this->client = $client;
         $this->parentQueryBuilder = $parentQueryBuilder;
-        $this->with((new $resourceClass())->with());
     }
 
     /**
@@ -284,9 +283,7 @@ class QueryBuilder
      */
     public function getQuery(): Query
     {
-        // clone the root query builder because we will be mutating it with declareVariable() and we do not
-        // want this to happen on the caller's instance.
-        $queryBuilder = $this->isRoot() ? clone $this : $this;
+        $queryBuilder = $this->with((new $this->resource)->with());
         $graphQueryBuilder = new \GraphQL\QueryBuilder\QueryBuilder($queryBuilder->objectName);
 
         $variables = [];

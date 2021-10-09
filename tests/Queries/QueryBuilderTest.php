@@ -4,6 +4,7 @@ namespace SeanKndy\SonarApi\Tests\Queries;
 
 use Illuminate\Support\Collection;
 use SeanKndy\SonarApi\Queries\QueryBuilder;
+use SeanKndy\SonarApi\Resources\BaseResource;
 use SeanKndy\SonarApi\Resources\ResourceInterface;
 use SeanKndy\SonarApi\Tests\Dummy\DummyResource;
 use SeanKndy\SonarApi\Tests\TestCase;
@@ -204,6 +205,23 @@ class QueryBuilderTest extends TestCase
         $queryBuilder2 = $queryBuilder1->with('anotherDummyResource');
 
         $this->assertNotSame($queryBuilder1, $queryBuilder2);
+    }
+
+    /** @test */
+    public function it_does_load_default_relations_on_resource()
+    {
+        $queryBuilder = new QueryBuilder(DummyResourceThatHasADefaultWith::class, 'dummies');
+
+        $selections = $this->getGraphQlQuerySelectionsAsArray($queryBuilder->getQuery()->query());
+        $this->assertEqualsCanonicalizing([
+            'entities' => [
+                'dummy_resource' => [
+                    'id',
+                    'name',
+                    'some_date_time',
+                ],
+            ]
+        ], $selections);
     }
 
     /** @test */
@@ -558,5 +576,15 @@ class QueryBuilderTest extends TestCase
                 ]
             ]
         ], $selections);
+    }
+}
+
+class DummyResourceThatHasADefaultWith extends BaseResource
+{
+    public DummyResource $dummyResource;
+
+    public function with(): array
+    {
+        return ['dummyResource'];
     }
 }
