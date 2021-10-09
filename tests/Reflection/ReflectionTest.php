@@ -21,7 +21,7 @@ class ReflectionTest extends TestCase
             'publicTypeInterfaces'
         ], \array_keys($public));
         $this->assertEquals(new PropertyType(Int64Bit::class, false), $public['publicTypeInterface']);
-        $this->assertEquals(new PropertyType(Int64Bit::class, true), $public['publicTypeInterfaces']);
+        $this->assertEquals(new PropertyType('\\'.Int64Bit::class, true), $public['publicTypeInterfaces']);
 
         $this->assertEquals([
             'protectedString',

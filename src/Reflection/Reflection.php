@@ -26,7 +26,7 @@ class Reflection
             if (\preg_match('/@var\s+(.+)/', $docComment, $m)) {
                 $type = $m[1];
                 if (\substr($type, -2) == '[]') {
-                    $type = \substr(\ltrim($type, '\\'), 0, -2);
+                    $type = \substr($type, 0, -2);
                     $isArray = true;
                 }
             }
