@@ -5,6 +5,7 @@ namespace SeanKndy\SonarApi\Reflection;
 class Reflection
 {
     /**
+     * @param class-string|object $objectOrClass
      * @throws \ReflectionException
      */
     public static function getPropertiesAndTypes($objectOrClass, int $filter = \ReflectionProperty::IS_PUBLIC): array
@@ -31,6 +32,7 @@ class Reflection
                 }
             }
         } else if (($type = $property->getType()) !== null) {
+            /** @psalm-suppress UndefinedMethod */
             $type = $type->getName();
         }
 

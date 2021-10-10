@@ -101,9 +101,9 @@ class Account extends BaseResource
     public function __toString(): string
     {
         return $this->name .
-            ($this->physicalAddress()
-                ? " - " . $this->physicalAddress()->line1 . ', ' . $this->physicalAddress()->line2 . ', ' .
-                    $this->physicalAddress()->city . ' ' . $this->physicalAddress()->zip
+            (($physAddr = $this->physicalAddress())
+                ? " - " . $physAddr->line1 . ', ' . (string)$physAddr->line2 . ', ' .
+                    (string)$physAddr->city . ' ' . (string)$physAddr->zip
                 : ''
             );
     }

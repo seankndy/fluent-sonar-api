@@ -26,7 +26,7 @@ class PropertyType
         return $this->arrayOf;
     }
 
-    public function isResource()
+    public function isResource(): bool
     {
         return is_a($this->type, ResourceInterface::class, true);
     }

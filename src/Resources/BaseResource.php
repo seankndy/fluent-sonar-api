@@ -11,7 +11,7 @@ use SeanKndy\SonarApi\Types\TypeInterface;
 
 abstract class BaseResource implements ResourceInterface
 {
-    public function __construct(array $data = [])
+    public final function __construct(array $data = [])
     {
         foreach ($data as $key => $value) {
             if (!property_exists($this, $key)) {
@@ -46,7 +46,7 @@ abstract class BaseResource implements ResourceInterface
                 if ($type->isResource() && $type->arrayOf()) {
                     if (isset($jsonObject->$jsonVar->entities) && $jsonObject->$jsonVar->entities) {
                         $data[$field] = \array_map(
-                            fn($entity) => ($type->type())::fromJsonObject($entity),
+                            fn(object $entity): ResourceInterface => ($type->type())::fromJsonObject($entity),
                             $jsonObject->$jsonVar->entities
                         );
                     } else {

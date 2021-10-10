@@ -4,6 +4,9 @@ namespace SeanKndy\SonarApi\Queries\Search;
 
 class NullCriteria extends Criteria
 {
+    /**
+     * @param mixed $value
+     */
     public function __construct(string $field, string $operator, $value)
     {
         parent::__construct($field, $operator, $value);

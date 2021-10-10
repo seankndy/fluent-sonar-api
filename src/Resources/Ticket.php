@@ -50,7 +50,7 @@ class Ticket extends BaseResource
 
     public function latestReply(): ?TicketReply
     {
-        return collect($this->ticketReplies)->sortByDesc(function ($reply) {
+        return collect($this->ticketReplies)->sortByDesc(function(TicketReply $reply): int {
             return $reply->createdAt->getTimestamp();
         })->first();
     }

@@ -34,12 +34,18 @@ abstract class BaseInput implements Input
         }
     }
 
-    public function __set($var, $value): void
+    /**
+     * @param mixed $value
+     */
+    public function __set(string $var, $value): void
     {
         $this->setProperty($var, $value);
     }
 
-    public function setProperty($var, $value): self
+    /**
+     * @param mixed $value
+     */
+    public function setProperty(string $var, $value): self
     {
         if (!property_exists($this, $var)) {
             throw new \InvalidArgumentException("Property '$var' does not exist on mutation input class " .
@@ -82,14 +88,15 @@ abstract class BaseInput implements Input
 
         if (is_a($type, Input::class, true)) {
             if ($arrayOf) {
-                return \array_map(fn($v) => $v->toArray(), $this->$var);
+                return \array_map(fn(Input $v): array => $v->toArray(), $this->$var);
             }
             return $this->$var->toArray();
         }
 
         if (is_a($type, TypeInterface::class, true)) {
             if ($arrayOf) {
-                return \array_map(fn($v) => $v->value(), $this->$var);
+                /** @psalm-suppress MissingClosureReturnType */
+                return \array_map(fn(TypeInterface $v) => $v->value(), $this->$var);
             }
             return $this->$var->value();
         }

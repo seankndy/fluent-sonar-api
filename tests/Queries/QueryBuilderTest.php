@@ -125,12 +125,23 @@ class QueryBuilderTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_exception_if_paginate_called_without_many_being_true(): void
+    public function it_throws_exception_if_paginate_called_without_a_client_set(): void
     {
-        $this->expectException(\Exception::class);
-        $this->expectDeprecationMessage('paginate() cannot be called because of singular query.');
+        $this->expectException(\RuntimeException::class);
+        $this->expectDeprecationMessage("Cannot call paginate() without a client!");
 
         (new QueryBuilder(DummyResource::class, 'dummies', null))
+            ->withMany(true)
+            ->paginate();
+    }
+
+    /** @test */
+    public function it_throws_exception_if_paginate_called_without_many_being_true(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectDeprecationMessage('paginate() cannot be called because of singular query.');
+
+        (new QueryBuilder(DummyResource::class, 'dummies', $this->createMock(Client::class)))
             ->withMany(false)
             ->paginate();
     }

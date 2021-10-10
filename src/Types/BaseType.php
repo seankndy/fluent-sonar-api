@@ -4,7 +4,7 @@ namespace SeanKndy\SonarApi\Types;
 
 abstract class BaseType implements TypeInterface
 {
-    public function name()
+    public function name(): string
     {
         return (new \ReflectionClass(static::class))->getShortName();
     }

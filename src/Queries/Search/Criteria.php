@@ -13,6 +13,9 @@ abstract class Criteria implements CriteriaInterface
      */
     protected $value;
 
+    /**
+     * @param mixed $value
+     */
     public function __construct(string $field, string $operator, $value)
     {
         if (!in_array($operator, ['=', '!=', '>', '<', '>=', '<='])) {
@@ -24,7 +27,10 @@ abstract class Criteria implements CriteriaInterface
         $this->value = $value;
     }
 
-    public static function create(string $field, string $operator, $value)
+    /**
+     * @param mixed $value
+     */
+    public static function create(string $field, string $operator, $value): Criteria
     {
         switch (gettype($value)) {
             case 'integer':

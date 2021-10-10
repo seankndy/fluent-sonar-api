@@ -9,12 +9,9 @@ use SeanKndy\SonarApi\Queries\QueryBuilder;
 use SeanKndy\SonarApi\Resources\ResourceInterface;
 use SeanKndy\SonarApi\Types\TypeInterface;
 
+/** @psalm-suppress PropertyNotSetInConstructor */
 class MutationBuilder
 {
-    /**
-     * Client required to run the mutation
-     */
-    private ?Client $client;
     /**
      * Mutation's name/method
      */
@@ -27,6 +24,10 @@ class MutationBuilder
      * Resource class to return from mutation response
      */
     private ?string $returnResource;
+    /**
+     * Client required to run the mutation
+     */
+    private ?Client $client;
 
     public function __construct(Client $client = null)
     {
@@ -47,10 +48,7 @@ class MutationBuilder
 
     public function __call(string $name, array $args)
     {
-        if (\count($args) !== 1) {
-            throw new \InvalidArgumentException("Calling mutation expects exactly 1 argument, 0 given.");
-        }
-        if (! \is_array($args = current($args))) {
+        if ($args && !\is_array($args = current($args))) {
             throw new \InvalidArgumentException("Mutation argument must be an array.");
         }
 
@@ -63,24 +61,34 @@ class MutationBuilder
 
     public function getQuery(): MutationInterface
     {
-        $mutation = (new \GraphQL\Mutation($this->name))
-        ->setVariables($this->variableDeclarations())
-        ->setArguments($this->mutationArguments())
-        ->setSelectionSet(
-            $this->returnResource
-                ? (new QueryBuilder($this->returnResource, ''))
-                ->withMany(false)
-                ->getQuery()
-                ->query()
-                ->getSelectionSet()
-                : []
-        );
+        $mutation = new \GraphQL\Mutation($this->name);
+        $mutation
+            ->setVariables($this->variableDeclarations())
+            ->setArguments($this->mutationArguments())
+            ->setSelectionSet(
+                $this->returnResource
+                    ? (new QueryBuilder($this->returnResource, ''))
+                    ->withMany(false)
+                    ->getQuery()
+                    ->query()
+                    ->getSelectionSet()
+                    : []
+            );
 
         return new Mutation($mutation, $this->variables());
     }
 
+    /**
+     * @return mixed
+     * @throws \SeanKndy\SonarApi\Exceptions\SonarHttpException
+     * @throws \SeanKndy\SonarApi\Exceptions\SonarQueryException
+     */
     public function run()
     {
+        if (! $this->client) {
+            throw new \RuntimeException("Cannot call run() without a client!");
+        }
+
         $response = $this->client->mutate($this->getQuery());
 
         if ($this->returnResource) {

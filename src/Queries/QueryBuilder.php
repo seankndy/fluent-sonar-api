@@ -10,6 +10,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
+/** @psalm-suppress PropertyNotSetInConstructor */
 class QueryBuilder
 {
     /**
@@ -94,7 +95,7 @@ class QueryBuilder
     /**
      * Execute the query return result(s).
      *
-     * @return ResourceInterface|Collection<int, ResourceInterface>|null
+     * @return ResourceInterface|Collection|null
      * @throws \SeanKndy\SonarApi\Exceptions\SonarHttpException
      * @throws \SeanKndy\SonarApi\Exceptions\SonarQueryException
      * @throws \Exception
@@ -113,7 +114,7 @@ class QueryBuilder
                 : null;
         }
         return collect($response->{$this->objectName}->entities)
-            ->map(fn($entity) => ($this->resource)::fromJsonObject($entity));
+            ->map(fn(object $entity): ResourceInterface => ($this->resource)::fromJsonObject($entity));
     }
 
     /**
@@ -123,13 +124,17 @@ class QueryBuilder
      * @throws \SeanKndy\SonarApi\Exceptions\SonarQueryException
      * @throws \Exception
      */
-    public function first()
+    public function first(): ?ResourceInterface
     {
         if (! $this->many) {
             throw new \Exception("first() cannot be called because of singular query.");
         }
 
-        return $this->get()->first();
+        if (($collection = $this->get()) && $collection instanceof Collection) {
+            return $collection->first();
+        }
+
+        return null;
     }
 
     /**
@@ -141,11 +146,15 @@ class QueryBuilder
      */
     public function paginate(int $perPage = 25, int $currentPage = 1, string $path = '/'): LengthAwarePaginator
     {
-        if (! $this->many) {
-            throw new \Exception("paginate() cannot be called because of singular query.");
+        $queryBuilder = clone $this;
+
+        if (! $queryBuilder->client) {
+            throw new \RuntimeException("Cannot call paginate() without a client!");
+        }
+        if (! $queryBuilder->many) {
+            throw new \RuntimeException("paginate() cannot be called because of singular query.");
         }
 
-        $queryBuilder = clone $this;
         $queryBuilder->paginate = true;
         $queryBuilder->paginatePerPage = $perPage;
         $queryBuilder->paginateCurrentPage = $currentPage;
@@ -153,7 +162,7 @@ class QueryBuilder
         $response = $queryBuilder->client->query($queryBuilder->getQuery());
         $pageInfo = $response->{$this->objectName}->page_info;
         $entities = collect($response->{$this->objectName}->entities)
-            ->map(fn($entity) => ($this->resource)::fromJsonObject($entity));
+            ->map(fn(object $entity): ResourceInterface => ($this->resource)::fromJsonObject($entity));
 
         return new LengthAwarePaginator($entities, $pageInfo->total_count, $perPage, $currentPage, [
             'path' => $path,
@@ -182,6 +191,7 @@ class QueryBuilder
     /**
      * Specify relations to include in query.  You may pass array with key being relation and value a closure which
      * receives a QueryBuilder instance for the relation.
+     * @param mixed ...$args
      */
     public function with(...$args): self
     {
@@ -225,6 +235,7 @@ class QueryBuilder
 
     /**
      * Limit the fields returned by query to only these fields.
+     * @param mixed ...$args
      */
     public function only(...$args): self
     {
@@ -247,6 +258,7 @@ class QueryBuilder
 
     /**
      * Specify a search filter criteria.
+     * @param mixed ...$args
      */
     public function where(string $field, ...$args): self
     {
@@ -263,6 +275,7 @@ class QueryBuilder
 
     /**
      * Specify an OR search filter criteria.
+     * @param mixed ...$args
      * @throws \Exception
      */
     public function orWhere(string $field, ...$args): self
@@ -351,7 +364,8 @@ class QueryBuilder
             $queryBuilder->declareVariable($this->getGraphQueryVariableName('paginator'), 'Paginator');
 
             $graphQueryBuilder
-                ->setArgument('paginator', '$'.$queryBuilder->getGraphQueryVariableName('paginator'))
+                ->setArgument('paginator', '$'.$queryBuilder->getGraphQueryVariableName('paginator'));
+            $graphQueryBuilder
                 ->selectField(
                     (new \GraphQL\Query('page_info'))
                     ->setSelectionSet([
@@ -394,6 +408,7 @@ class QueryBuilder
 
     /**
      * Declare variable on the root query builder as that is where variable declarations belong in GraphQL.
+     * @param mixed $defaultValue
      */
     private function declareVariable(string $name, string $type, bool $isRequired = false, $defaultValue = null): void
     {
@@ -404,16 +419,16 @@ class QueryBuilder
         }
     }
 
-    private function getRootQueryBuilder()
+    private function getRootQueryBuilder(): self
     {
-        if ($this->isRoot()) {
+        if ($this->parentQueryBuilder === null) {
             return $this;
         }
 
         return $this->parentQueryBuilder->getRootQueryBuilder();
     }
 
-    private function isRoot()
+    private function isRoot(): bool
     {
         return $this->parentQueryBuilder === null;
     }

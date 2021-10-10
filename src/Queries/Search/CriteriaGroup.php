@@ -14,6 +14,9 @@ class CriteriaGroup
         $this->criterias = $criterias;
     }
 
+    /**
+     * @param mixed $value
+     */
     public function add(string $field, string $operator, $value): self
     {
         $this->criterias[] = Criteria::create($field, $operator, $value);

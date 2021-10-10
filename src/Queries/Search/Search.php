@@ -14,6 +14,9 @@ class Search
      */
     private array $orWhereCriteriaGroups = [];
 
+    /**
+     * @param mixed ...$args
+     */
     public function where(string $field, ...$args): self
     {
         if (!($operatorAndValue = $this->getOperatorAndValue($args))) {
@@ -62,9 +65,12 @@ class Search
         return $search;
     }
 
+    /**
+     * @param mixed ...$args
+     */
     public function orWhere(string $field, ...$args): self
     {
-        if (!$this->whereCriteriaGroups) {
+        if (! $this->whereCriteriaGroups) {
             throw new \RuntimeException('You cannot call orWhere() before where()!');
         }
 

@@ -34,21 +34,23 @@ class MutationBuilderTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_exception_when_calling_mutation_method_without_argument()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("Calling mutation expects exactly 1 argument, 0 given.");
-
-        $builder = (new MutationBuilder())->testMutation();
-    }
-
-    /** @test */
     public function it_throws_exception_when_calling_mutation_method_without_array_argument()
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Mutation argument must be an array.");
 
         $builder = (new MutationBuilder())->testMutation(1234);
+    }
+
+    /** @test */
+    public function it_throws_exception_when_calling_run_without_client_set()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("Cannot call run() without a client!");
+
+        (new MutationBuilder())
+            ->testMutation()
+            ->run();
     }
 
     /** @test */
