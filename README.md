@@ -151,7 +151,9 @@ $client
     ->get()
 ```
 
-These methods do not support a second search closure argument.
+These not-has methods do not support a second search closure argument.
+
+Not that any of the where-has type methods do not require that the relation be loaded by `with()` for them to be effective.
 
 # Pagination
 
