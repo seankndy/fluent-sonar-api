@@ -14,6 +14,7 @@ use SeanKndy\SonarApi\Exceptions\SonarQueryException;
 use SeanKndy\SonarApi\Resources\Account;
 use SeanKndy\SonarApi\Resources\Company;
 use SeanKndy\SonarApi\Resources\Contact;
+use SeanKndy\SonarApi\Resources\Invoice;
 use SeanKndy\SonarApi\Resources\Job;
 use SeanKndy\SonarApi\Resources\JobType;
 use SeanKndy\SonarApi\Resources\NetworkSite;
@@ -46,6 +47,7 @@ class Client
             'accounts' => Account::class,
             'tickets' => Ticket::class,
             'contacts' => Contact::class,
+            'invoices' => Invoice::class,
             'networkSites' => NetworkSite::class,
             'jobs' => Job::class,
             'jobTypes' => JobType::class,
