@@ -69,17 +69,89 @@ namespace App;
 
 use SeanKndy\SonarApi\Client;
 use GuzzleHttp\Client as GuzzleClient;
-use App\Support\SonarApi\Resources\Invoice;
+use App\Support\SonarApi\Resources\InventoryItem;
 
 $client = new Client(
     new GuzzleClient(),
     '<your api key>',
     'https://your-sonar-instance.sonar.software',
     [
-        'invoices' => Invoice::class,
+        'inventoryItems' => InventoryItem::class,
     ],
 );
 ```
+
+## where() and whereHas()
+
+When writing queries you can filter them using the where methods.  `where()` and `orWhere()` create Sonar search filter objects.  There are limitations to grouping search logic due to how the search filters work in Sonar's API.  It is probably simplest to just show various call structures supported and the resulting search logic they produce:
+
+```
+$client->someObjects()
+    ->where('field1', 'foo')
+    ->where('field2', '!=', 'bar');
+// logic:  (field1 = 'foo' AND field2 != 'bar')
+
+$client->someObjects()
+    ->where('field1', 'foo')
+    ->where('field2', '!=', 'bar')
+    ->orWhere('field3', 'baz');
+// logic:  (field1 = 'foo' AND field2 != 'bar') OR field3 = 'baz'
+
+$client->someObjects()
+    ->where('field1', 'foo')
+    ->where('field2', '!=', 'bar')
+    ->orWhere('field3', 'baz')
+    ->where('field4', 'qux')
+// logic:  (field1 = 'foo' AND field2 != 'bar') OR (field3 = 'baz' AND field4 = 'qux')
+
+$client->someObjects()
+    ->where('field1', 'foo')
+    ->where('field2', '!=', 'bar')
+    ->orWhere('field3', 'baz')
+    ->where('field4', ['qux', 'quux'])
+// logic: INVALID, cannot call where() on array of values (which is an ORed search) after an orWhere()
+
+$client->someObjects()
+    ->where('field1', ['foo', 'bar'])
+    ->where('field2', ['baz', 'qux'])
+// logic:  (field1 = 'foo' OR field1 = 'bar') AND (field2 = 'baz' OR field2 = 'qux')
+```
+
+`where()` and `orWhere()` have the same arguments: field, operator, search_value.  You can pass only 2 arguments and it is assumed the second argument is the search_value and the operator is '='.
+
+`whereHas()`, `orWhereHas()`, `whereNotHas()` and `orWhereNotHas()` are also supported and these produce Sonar's ReverseRelationFilters.  They filter the current object based on the xfiltering of a related object.  Example showing a way to get only accounts that have related Addresses with a city of Chicago:
+
+```
+$client
+    ->accounts()
+    ->whereHas('addresses', fn($search) => $search->where('city', 'Chicago'))
+    ->get()
+```
+
+The second argument passed to `whereHas()` is a closure that receives a `\SeanKndy\SonarApi\Queries\Search\Search` object which is a where()-able object to build searches.
+
+The second argument is optional and if not passed then the filter will be for the presence of any objects on the relation.
+
+`orWhereHas()` allows you to specify an ORed relation filter.  For example, let's get any account that has an address in Chicago OR the account has any invoices present at all:
+
+```
+$client
+    ->accounts()
+    ->whereHas('addresses', fn($search) => $search->where('city', 'Chicago'))
+    ->orWhereHas('invoices')
+    ->get()
+```
+
+Lastly, you can use `whereNotHas()` and `orWhereNotHas()` to filter on the absence of a relation such as if you wanted to get all accounts that have NO tickets:
+
+```
+$client
+    ->accounts()
+    ->whereNotHas('tickets')
+    ->get()
+```
+
+These methods do not support a second search closure argument.
 
 # Pagination
 

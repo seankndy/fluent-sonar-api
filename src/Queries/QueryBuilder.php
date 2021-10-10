@@ -328,12 +328,45 @@ class QueryBuilder
         $queryBuilder = clone $this;
 
         if (! $this->reverseRelationFilters) {
-            throw new \RuntimeException("Cannot call orWhereHas() before an orWhere()!");
+            throw new \RuntimeException("Cannot call orWhereHas() before a whereHas()!");
         }
 
         $queryBuilder->currentReverseRelationFilterGroup++;
 
         return $queryBuilder->whereHas($relation, $searchCallable);
+    }
+
+    /**
+     * Filter current objects based on absence of related object(s).
+     */
+    public function whereNotHas(string $relation): self
+    {
+        $queryBuilder = clone $this;
+
+        $queryBuilder->reverseRelationFilters[] = new ReverseRelationFilter(
+            $relation,
+            new Search(),
+            (string)$this->currentReverseRelationFilterGroup,
+            true
+        );
+
+        return $queryBuilder;
+    }
+
+    /**
+     * Filter current objects based on absence of related object(s), ORed with other RRFs.
+     */
+    public function orWhereNotHas(string $relation): self
+    {
+        $queryBuilder = clone $this;
+
+        if (! $this->reverseRelationFilters) {
+            throw new \RuntimeException("Cannot call orWhereNotHas() before a whereHas()!");
+        }
+
+        $queryBuilder->currentReverseRelationFilterGroup++;
+
+        return $queryBuilder->whereNotHas($relation);
     }
 
     /**

@@ -665,7 +665,7 @@ class QueryBuilderTest extends TestCase
     public function it_throws_exception_when_calling_orWhereHas_before_whereHas()
     {
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage("Cannot call orWhereHas() before an orWhere()!");
+        $this->expectExceptionMessage("Cannot call orWhereHas() before a whereHas()!");
 
         (new QueryBuilder(DummyResource::class, 'dummies'))
             ->orWhereHas('foo');
@@ -739,6 +739,69 @@ class QueryBuilderTest extends TestCase
                 ]
             ]
         ], $query->variables());
+    }
+
+    /** @test */
+    public function it_creates_reverse_relation_filter_with_is_empty_true_when_calling_whereNotHas()
+    {
+        $query = (new QueryBuilder(DummyResource::class, 'dummies'))
+            ->whereNotHas('foo')
+            ->getQuery();
+
+        $this->assertEquals([
+            'dummies_rrf' => [
+                [
+                    'relation' => 'foo',
+                    'is_empty' => true,
+                    'group' => '1',
+                ]
+            ]
+        ], $query->variables());
+    }
+
+    /** @test */
+    public function it_creates_new_rrf_in_new_group_with_is_empty_true_when_calling_orWhereNotHas()
+    {
+        $query = (new QueryBuilder(DummyResource::class, 'dummies'))
+            ->whereHas('anotherDummyResource', fn($search) => $search->where('name', 'test'))
+            ->orWhereNotHas('foo')
+            ->getQuery();
+
+        $this->assertEquals([
+            'dummies_rrf' => [
+                [
+                    'relation' => 'another_dummy_resource',
+                    'search' => [
+                        [
+                            'string_fields' => [
+                                [
+                                    'attribute' => 'name',
+                                    'search_value' => 'test',
+                                    'match' => true,
+                                    'partial_matching' => false,
+                                ]
+                            ]
+                        ]
+                    ],
+                    'group' => '1',
+                ],
+                [
+                    'relation' => 'foo',
+                    'is_empty' => true,
+                    'group' => '2',
+                ]
+            ]
+        ], $query->variables());
+    }
+
+    /** @test */
+    public function it_throws_exception_when_calling_orWhereNotHas_before_whereHas()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("Cannot call orWhereNotHas() before a whereHas()!");
+
+        (new QueryBuilder(DummyResource::class, 'dummies'))
+            ->orWhereNotHas('foo');
     }
 }
 
