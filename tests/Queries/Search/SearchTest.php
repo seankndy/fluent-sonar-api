@@ -343,4 +343,20 @@ class SearchTest extends TestCase
             ],
         ], $search->toArray());
     }
+
+    /** @test */
+    public function it_returns_true_when_calling_isEmpty_and_is_truly_empty()
+    {
+        $search = (new Search());
+
+        $this->assertTrue($search->isEmpty());
+    }
+
+    /** @test */
+    public function it_returns_false_when_calling_isEmpty_and_is_not_empty()
+    {
+        $search = (new Search())->where('field', '=', 'something');
+
+        $this->assertNotTrue($search->isEmpty());
+    }
 }

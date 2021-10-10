@@ -588,6 +588,158 @@ class QueryBuilderTest extends TestCase
             ]
         ], $selections);
     }
+
+    /** @test */
+    public function it_does_return_new_query_builder_when_calling_whereHas()
+    {
+        $queryBuilder1 = new QueryBuilder(DummyResource::class, 'dummies');
+        $queryBuilder2 = $queryBuilder1->whereHas('anotherDummyResource');
+
+        $this->assertNotSame($queryBuilder1, $queryBuilder2);
+    }
+
+    /** @test */
+    public function it_applies_a_reverse_relation_filter_to_query_when_calling_whereHas()
+    {
+        $query = (new QueryBuilder(DummyResource::class, 'dummies'))
+            ->whereHas('anotherDummyResource')
+            ->getQuery();
+
+        $this->assertEquals([
+            'dummies_rrf' => '[ReverseRelationFilter]',
+        ], $this->getGraphQlQueryVariableDeclarations($query->query()));
+
+        $this->assertMatchesRegularExpression('/query\(.+?\) {[\r\n\s]+dummies\(reverse_relation_filters: \$dummies_rrf\) {/s', (string)$query->query());
+
+        $this->assertEquals([
+            'dummies_rrf' => [
+                [
+                    'relation' => 'another_dummy_resource',
+                    'is_empty' => false,
+                    'group' => '1',
+                ]
+            ]
+        ], $query->variables());
+    }
+
+    /** @test */
+    public function it_omits_is_empty_on_rrf_if_search_callable_given_when_calling_whereHas()
+    {
+        $query = (new QueryBuilder(DummyResource::class, 'dummies'))
+            ->whereHas('anotherDummyResource', fn($search) => $search->where('name', 'test'))
+            ->getQuery();
+
+        $this->assertEquals([
+            'dummies_rrf' => [
+                [
+                    'relation' => 'another_dummy_resource',
+                    'search' => [
+                        [
+                            'string_fields' => [
+                                [
+                                    'attribute' => 'name',
+                                    'search_value' => 'test',
+                                    'match' => true,
+                                    'partial_matching' => false,
+                                ]
+                            ]
+                        ]
+                    ],
+                    'group' => '1',
+                ]
+            ]
+        ], $query->variables());
+    }
+
+    /** @test */
+    public function it_does_return_new_query_builder_when_calling_orWhereHas()
+    {
+        $queryBuilder1 = new QueryBuilder(DummyResource::class, 'dummies');
+        $queryBuilder2 = $queryBuilder1->whereHas('anotherDummyResource');
+        $queryBuilder3 = $queryBuilder2->orWhereHas('foo');
+
+        $this->assertNotSame($queryBuilder2, $queryBuilder3);
+    }
+
+    /** @test */
+    public function it_throws_exception_when_calling_orWhereHas_before_whereHas()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("Cannot call orWhereHas() before an orWhere()!");
+
+        (new QueryBuilder(DummyResource::class, 'dummies'))
+            ->orWhereHas('foo');
+    }
+
+    /** @test */
+    public function it_creates_new_rrf_and_increments_group_on_rrf_when_calling_orWhereHas()
+    {
+        $query = (new QueryBuilder(DummyResource::class, 'dummies'))
+            ->whereHas('anotherDummyResource', fn($search) => $search->where('name', 'test'))
+            ->orWhereHas('foo')
+            ->getQuery();
+
+        $this->assertEquals([
+            'dummies_rrf' => [
+                [
+                    'relation' => 'another_dummy_resource',
+                    'search' => [
+                        [
+                            'string_fields' => [
+                                [
+                                    'attribute' => 'name',
+                                    'search_value' => 'test',
+                                    'match' => true,
+                                    'partial_matching' => false,
+                                ]
+                            ]
+                        ]
+                    ],
+                    'group' => '1',
+                ],
+                [
+                    'relation' => 'foo',
+                    'is_empty' => false,
+                    'group' => '2',
+                ]
+            ]
+        ], $query->variables());
+    }
+
+    /** @test */
+    public function it_creates_new_rrf_when_calling_second_whereHas()
+    {
+        $query = (new QueryBuilder(DummyResource::class, 'dummies'))
+            ->whereHas('anotherDummyResource', fn($search) => $search->where('name', 'test'))
+            ->whereHas('foo')
+            ->getQuery();
+
+        $this->assertEquals([
+            'dummies_rrf' => [
+                [
+                    'relation' => 'another_dummy_resource',
+                    'search' => [
+                        [
+                            'string_fields' => [
+                                [
+                                    'attribute' => 'name',
+                                    'search_value' => 'test',
+                                    'match' => true,
+                                    'partial_matching' => false,
+                                ]
+                            ]
+                        ]
+                    ],
+                    'group' => '1',
+                ],
+                [
+                    'relation' => 'foo',
+                    'is_empty' => false,
+                    'group' => '1',
+                ]
+            ]
+        ], $query->variables());
+    }
 }
 
 class DummyResourceThatHasADefaultWith extends BaseResource
