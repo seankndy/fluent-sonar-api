@@ -16,9 +16,9 @@ abstract class Criteria implements CriteriaInterface
     /**
      * @param mixed $value
      */
-    public function __construct(string $field, string $operator, $value)
+    public final function __construct(string $field, string $operator, $value)
     {
-        if (!in_array($operator, ['=', '!=', '>', '<', '>=', '<='])) {
+        if (!in_array($operator, $this->validOperators())) {
             throw new \InvalidArgumentException("Operator '$operator' not a valid operator.");
         }
 
@@ -48,4 +48,6 @@ abstract class Criteria implements CriteriaInterface
 
         return new $criteriaClass($field, $operator, $value);
     }
+
+    abstract protected function validOperators(): array;
 }

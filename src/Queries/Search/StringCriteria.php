@@ -14,8 +14,13 @@ class StringCriteria extends Criteria
         return [
             'attribute' => $this->field,
             'search_value' => $this->value,
-            'match' => $this->operator === '=',
-            'partial_matching' => false,
+            'match' => $this->operator === '=' || $this->operator === '=~',
+            'partial_matching' => $this->operator === '=~' || $this->operator === '!~',
         ];
+    }
+
+    protected function validOperators(): array
+    {
+        return ['=', '!=', '=~', '!~'];
     }
 }

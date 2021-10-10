@@ -74,6 +74,14 @@ class QueryBuilder
      * Sonar API Client, Client is required if the user code wants to call get(), first() or paginate().
      */
     private ?Client $client = null;
+    /**
+     * Reverse relation filters (whereHas() searches)
+     */
+    private array $reverseRelationFilters = [];
+    /**
+     * Specifies the current RRF group.  Incremented every orWhereHas() call.
+     */
+    private int $currentReverseRelationFilterGroup = 1;
 
     public function __construct(
         string $resourceClass,
@@ -292,6 +300,43 @@ class QueryBuilder
     }
 
     /**
+     * Specify a relation search filter that affects the parent results.
+     */
+    public function whereHas(string $relation, callable $searchCallable = null): self
+    {
+        $queryBuilder = clone $this;
+
+        $search = new Search();
+        if ($searchCallable) {
+            $search = $searchCallable($search);
+        }
+        $queryBuilder->reverseRelationFilters[] = new ReverseRelationFilter(
+            $relation,
+            $search,
+            (string)$this->currentReverseRelationFilterGroup,
+            $searchCallable === null ? false : null
+        );
+
+        return $queryBuilder;
+    }
+
+    /**
+     * Specify a relation search filter that affects the parent results ORed from other RRFs.
+     */
+    public function orWhereHas(string $relation, callable $searchCallable = null): self
+    {
+        $queryBuilder = clone $this;
+
+        if (! $this->reverseRelationFilters) {
+            throw new \RuntimeException("Cannot call orWhereHas() before an orWhere()!");
+        }
+
+        $queryBuilder->currentReverseRelationFilterGroup++;
+
+        return $queryBuilder->whereHas($relation, $searchCallable);
+    }
+
+    /**
      * Get Query instance suitable for execution by Client.
      */
     public function getQuery(): Query
@@ -349,6 +394,16 @@ class QueryBuilder
             $graphQueryBuilder->setArgument('search', '$'.$queryBuilder->getGraphQueryVariableName('search'));
 
             $variables[$queryBuilder->objectName.'_search'] = $queryBuilder->search->toArray();
+        }
+        if ($queryBuilder->reverseRelationFilters) {
+            $queryBuilder->declareVariable($queryBuilder->objectName.'_rrf', '[ReverseRelationFilter]');
+
+            $graphQueryBuilder->setArgument('reverse_relation_filters', '$'.$queryBuilder->objectName.'_rrf');
+
+            $variables[$queryBuilder->objectName.'_rrf'] = \array_map(
+                fn(ReverseRelationFilter $rrf): array => $rrf->toArray(),
+                $queryBuilder->reverseRelationFilters
+            );
         }
         if ($queryBuilder->sortBy) {
             $queryBuilder->declareVariable($this->getGraphQueryVariableName('sorter'), 'Sorter');

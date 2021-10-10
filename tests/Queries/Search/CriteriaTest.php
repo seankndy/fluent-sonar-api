@@ -11,11 +11,12 @@ use SeanKndy\SonarApi\Tests\TestCase;
 
 class CriteriaTest extends TestCase
 {
-    /** @test */
-    public function it_throws_exception_when_initialized_with_invalid_operator()
+    /**
+     * @test
+     * @dataProvider invalidOperatorDataProvider
+     */
+    public function it_throws_exception_when_initialized_with_invalid_operator($operator)
     {
-        $operator = '<>';
-
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Operator '$operator' not a valid operator.");
 
@@ -40,10 +41,14 @@ class CriteriaTest extends TestCase
         $this->assertInstanceOf($expectedClass, Criteria::create('field', '=', $value));
     }
 
-
     public function validOperatorDataProvider()
     {
-        return [['='], ['!='], ['>'], ['<'], ['>='], ['<=']];
+        return [['!='], ['=']];
+    }
+
+    public function invalidOperatorDataProvider()
+    {
+        return [['!~'], ['=~'], ['>'], ['<'], ['>='], ['<=']];
     }
 
     public function criteriaTypesDataProvider()
@@ -58,6 +63,24 @@ class CriteriaTest extends TestCase
     }
 }
 
-class TestCriteria extends StringCriteria
+class TestCriteria extends Criteria
 {
+    protected function validOperators(): array
+    {
+        return ['=', '!='];
+    }
+
+    public function fieldName(): string
+    {
+        return 'test_fields';
+    }
+
+    public function toSonarObject()
+    {
+        return [
+            'attribute' => $this->field,
+            'operator' => $this->operator,
+            'search_value' => $this->value,
+        ];
+    }
 }

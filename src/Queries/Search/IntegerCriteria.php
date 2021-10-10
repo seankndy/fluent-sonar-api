@@ -24,4 +24,9 @@ class IntegerCriteria extends Criteria
             ][$this->operator]
         ];
     }
+
+    protected function validOperators(): array
+    {
+        return ['=', '!=', '>', '<', '>=', '<='];
+    }
 }

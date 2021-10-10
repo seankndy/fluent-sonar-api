@@ -14,14 +14,14 @@ class BooleanCriteriaTest extends TestCase
     public function it_throws_exception_when_initialized_with_operator_that_isnt_eq($operator)
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("Boolean values only support an equality (=) comparison.");
+        $this->expectExceptionMessage("Operator '$operator' not a valid operator.");
 
         new BooleanCriteria('field', $operator, 'blah');
     }
 
     public function invalidOperatorDataProvider()
     {
-        return [['!='], ['>'], ['<'], ['>='], ['<=']];
+        return [['!='], ['>'], ['<'], ['>='], ['<='], ['=~'], ['!~']];
     }
 }
 

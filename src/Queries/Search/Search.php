@@ -98,6 +98,11 @@ class Search
         return $array;
     }
 
+    public function isEmpty(): bool
+    {
+        return !$this->whereCriteriaGroups && !$this->orWhereCriteriaGroups;
+    }
+
     private function getOperatorAndValue(array $args): array
     {
         if (count($args) == 1) {

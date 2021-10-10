@@ -14,14 +14,14 @@ class NullCriteriaTest extends TestCase
     public function it_throws_exception_when_initialized_with_operator_that_isnt_eq_or_neq($operator)
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("Null values only support an equality (=) and inequality (!=) comparison.");
+        $this->expectExceptionMessage("Operator '$operator' not a valid operator.");
 
         new NullCriteria('field', $operator, 'blah');
     }
 
     public function invalidOperatorDataProvider()
     {
-        return [['>'], ['<'], ['>='], ['<=']];
+        return [['>'], ['<'], ['>='], ['<='], ['=~'], ['!~']];
     }
 }
 
