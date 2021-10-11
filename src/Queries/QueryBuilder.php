@@ -138,11 +138,8 @@ class QueryBuilder
             throw new \Exception("first() cannot be called because of singular query.");
         }
 
-        if (($collection = $this->get()) && $collection instanceof Collection) {
-            return $collection->first();
-        }
-
-        return null;
+        /** @psalm-suppress PossiblyNullReference, PossiblyUndefinedMethod */
+        return $this->get()->first();
     }
 
     /**

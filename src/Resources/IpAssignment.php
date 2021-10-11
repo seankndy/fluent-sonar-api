@@ -30,7 +30,7 @@ class IpAssignment extends BaseResource
     {
         if (\strstr($this->subnet, '/')) {
             [$network, $prefix] = \explode('/', $this->subnet);
-            return $prefix;
+            return \intval($prefix);
         }
         return \strstr($this->subnet, ':') === false ? 32 : 128;
     }
