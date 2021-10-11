@@ -12,13 +12,21 @@ use SeanKndy\SonarApi\Queries\QueryBuilder;
 use SeanKndy\SonarApi\Exceptions\SonarHttpException;
 use SeanKndy\SonarApi\Exceptions\SonarQueryException;
 use SeanKndy\SonarApi\Resources\Account;
+use SeanKndy\SonarApi\Resources\AccountService;
+use SeanKndy\SonarApi\Resources\AccountStatus;
 use SeanKndy\SonarApi\Resources\Company;
 use SeanKndy\SonarApi\Resources\Contact;
+use SeanKndy\SonarApi\Resources\CustomField;
 use SeanKndy\SonarApi\Resources\Invoice;
+use SeanKndy\SonarApi\Resources\IpAssignment;
+use SeanKndy\SonarApi\Resources\IpPool;
 use SeanKndy\SonarApi\Resources\Job;
 use SeanKndy\SonarApi\Resources\JobType;
 use SeanKndy\SonarApi\Resources\NetworkSite;
+use SeanKndy\SonarApi\Resources\RadiusAccount;
 use SeanKndy\SonarApi\Resources\Service;
+use SeanKndy\SonarApi\Resources\Subnet;
+use SeanKndy\SonarApi\Resources\Supernet;
 use SeanKndy\SonarApi\Resources\Ticket;
 use GuzzleHttp\ClientInterface as GuzzleClientInterface;
 use SeanKndy\SonarApi\Resources\User;
@@ -45,10 +53,18 @@ class Client
         $this->rootQueryBuilders = \array_merge([
             'companies' => Company::class,
             'accounts' => Account::class,
+            'accountServices' => AccountService::class,
+            'accountStatuses' => AccountStatus::class,
+            'customFields' => CustomField::class,
             'tickets' => Ticket::class,
             'contacts' => Contact::class,
             'invoices' => Invoice::class,
             'networkSites' => NetworkSite::class,
+            'radiusAccounts' => RadiusAccount::class,
+            'supernets' => Supernet::class,
+            'subnets' => Subnet::class,
+            'ipPools' => IpPool::class,
+            'ipAssignments' => IpAssignment::class,
             'jobs' => Job::class,
             'jobTypes' => JobType::class,
             'services' => Service::class,

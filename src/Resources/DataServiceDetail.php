@@ -2,8 +2,12 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
+use SeanKndy\SonarApi\Resources\Traits\HasNotes;
+
 class DataServiceDetail extends BaseResource
 {
+    use HasNotes;
+
     public int $id;
 
     public int $billingFrequency;
@@ -23,9 +27,4 @@ class DataServiceDetail extends BaseResource
     public \DateTime $createdAt;
 
     public \DateTime $updatedAt;
-
-    /**
-     * @var \SeanKndy\SonarApi\Resources\Note[]
-     */
-    public array $notes;
 }

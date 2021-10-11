@@ -2,8 +2,13 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
+use SeanKndy\SonarApi\Resources\Traits\HasIpAssignments;
+use SeanKndy\SonarApi\Resources\Traits\HasNotes;
+
 class Account extends BaseResource
 {
+    use HasNotes, HasIpAssignments;
+
     public int $id;
 
     public string $name;
@@ -52,11 +57,6 @@ class Account extends BaseResource
      * @var \SeanKndy\SonarApi\Resources\IpAssignment[]
      */
     public array $ipAssignments;
-
-    /**
-     * @var \SeanKndy\SonarApi\Resources\Note[]
-     */
-    public array $notes;
 
     /**
      * @var \SeanKndy\SonarApi\Resources\RadiusAccount[]

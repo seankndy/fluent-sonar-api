@@ -5,21 +5,25 @@ namespace SeanKndy\SonarApi\Resources;
 use SeanKndy\SonarApi\Resources\Traits\HasIpAssignments;
 use SeanKndy\SonarApi\Resources\Traits\HasNotes;
 
-class RadiusAccount extends BaseResource
+class IpPool extends BaseResource
 {
-    use HasIpAssignments, HasNotes;
+    use HasNotes, HasIpAssignments;
 
     public int $id;
 
-    public int $accountId;
+    public ?int $dhcpServerIdentifierId;
 
-    public string $username;
+    public string $ipRange;
 
-    public string $password;
+    public int $ipsAvailable;
+
+    public string $name;
+
+    public int $subnetId;
 
     public \DateTime $createdAt;
 
     public \DateTime $updatedAt;
 
-    public ?Account $account;
+    public ?Subnet $subnet;
 }
