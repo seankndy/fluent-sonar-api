@@ -25,4 +25,13 @@ class IpAssignment extends BaseResource
     public \DateTime $createdAt;
 
     public \DateTime $updatedAt;
+
+    public function prefixLength(): int
+    {
+        if (\strstr($this->subnet, '/')) {
+            [$network, $prefix] = \explode('/', $this->subnet);
+            return $prefix;
+        }
+        return \strstr($this->subnet, ':') === false ? 32 : 128;
+    }
 }
