@@ -4,6 +4,14 @@ This is a Sonar Software (https://sonar.software) v2 GraphQL PHP API client with
 
 A key benefit to using this library is that the resources and inputs are wrapped in real PHP objects allowing static analyzers to assist in preventing bugs and your IDE can do code completions.
 
+# Installation
+
+You can install the package via composer:
+
+```
+composer require seankndy/fluent-sonar-api
+```
+
 # Queries
 
 Queries are done by calling the top level object name as a method and then chaining your filters, sorts, and relations to load.  Basic Accounts example:
