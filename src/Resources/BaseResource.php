@@ -8,7 +8,7 @@ use SeanKndy\SonarApi\Resources\Traits\HasLogs;
 use Illuminate\Support\Str;
 use SeanKndy\SonarApi\Types\TypeInterface;
 
-abstract class BaseResource implements ResourceInterface
+abstract class BaseResource implements ResourceInterface, RelationableResourceInterface
 {
     use HasLogs, HasAccessLogs;
 
@@ -26,7 +26,7 @@ abstract class BaseResource implements ResourceInterface
     /**
      * @codeCoverageIgnore
      */
-    public function with(): array
+    public static function with(): array
     {
         return [];
     }

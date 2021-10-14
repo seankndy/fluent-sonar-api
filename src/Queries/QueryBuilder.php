@@ -5,6 +5,7 @@ namespace SeanKndy\SonarApi\Queries;
 use SeanKndy\SonarApi\Client;
 use SeanKndy\SonarApi\Queries\Search\Search;
 use SeanKndy\SonarApi\Reflection\Reflection;
+use SeanKndy\SonarApi\Resources\RelationableResourceInterface;
 use SeanKndy\SonarApi\Resources\ResourceInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -371,7 +372,12 @@ class QueryBuilder
      */
     public function getQuery(): Query
     {
-        $queryBuilder = $this->with((new $this->resource)->with());
+        if (\is_a($this->resource, RelationableResourceInterface::class, true)) {
+            $queryBuilder = $this->with($this->resource::with());
+        } else {
+            $queryBuilder = clone $this;
+        }
+
         $graphQueryBuilder = new \GraphQL\QueryBuilder\QueryBuilder($queryBuilder->objectName);
 
         $variables = [];

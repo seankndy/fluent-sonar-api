@@ -236,6 +236,26 @@ class QueryBuilderTest extends TestCase
     }
 
     /** @test */
+    public function it_does_load_default_relations_and_applies_nested_closures_on_a_resource()
+    {
+        $queryBuilder = new QueryBuilder(DummyResourceThatHasADefaultWithThatHasNestedWith::class, 'dummies');
+
+        $selections = $this->getGraphQlQuerySelectionsAsArray($queryBuilder->getQuery()->query());
+        $this->assertEqualsCanonicalizing([
+            'entities' => [
+                'dummy_resource' => [
+                    'id',
+                    'name',
+                    'some_date_time',
+                    'another_dummy_resource' => [ // nested with from a closure should be here
+                        'name',
+                    ]
+                ],
+            ]
+        ], $selections);
+    }
+
+    /** @test */
     public function it_does_allow_string_or_array_arguments_when_calling_with()
     {
         $queryBuilder = (new QueryBuilder(DummyResource::class, 'dummies'))
@@ -809,8 +829,18 @@ class DummyResourceThatHasADefaultWith extends BaseResource
 {
     public DummyResource $dummyResource;
 
-    public function with(): array
+    public static function with(): array
     {
         return ['dummyResource'];
+    }
+}
+
+class DummyResourceThatHasADefaultWithThatHasNestedWith extends BaseResource
+{
+    public DummyResource $dummyResource;
+
+    public static function with(): array
+    {
+        return ['dummyResource' => fn($query) => $query->with('anotherDummyResource')];
     }
 }
