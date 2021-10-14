@@ -2,12 +2,14 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
+use SeanKndy\SonarApi\Resources\Traits\HasAddresses;
+use SeanKndy\SonarApi\Resources\Traits\HasCustomFieldData;
 use SeanKndy\SonarApi\Resources\Traits\HasIpAssignments;
 use SeanKndy\SonarApi\Resources\Traits\HasNotes;
 
 class Account extends BaseResource
 {
-    use HasNotes, HasIpAssignments;
+    use HasNotes, HasIpAssignments, HasAddresses, HasCustomFieldData;
 
     public int $id;
 
@@ -39,19 +41,9 @@ class Account extends BaseResource
     public array $accountServices;
 
     /**
-     * @var \SeanKndy\SonarApi\Resources\Address[]
-     */
-    public array $addresses;
-
-    /**
      * @var \SeanKndy\SonarApi\Resources\Contact[]
      */
     public array $contacts;
-
-    /**
-     * @var \SeanKndy\SonarApi\Resources\CustomFieldData[]
-     */
-    public array $customFieldData;
 
     /**
      * @var \SeanKndy\SonarApi\Resources\IpAssignment[]
@@ -64,6 +56,11 @@ class Account extends BaseResource
     public array $radiusAccounts;
 
     /**
+     * @var \SeanKndy\SonarApi\Resources\BankAccount[]
+     */
+    public array $bankAccounts;
+
+    /**
      * @var \SeanKndy\SonarApi\Resources\Ticket[]
      */
     public array $tickets;
@@ -74,26 +71,6 @@ class Account extends BaseResource
     public array $jobs;
 
     public ?AccountBillingParameter $accountBillingParameter;
-
-    public function physicalAddress(): ?Address
-    {
-        foreach ($this->addresses as $address) {
-            if ($address->type === 'PHYSICAL') {
-                return $address;
-            }
-        }
-        return null;
-    }
-
-    public function mailingAddress(): ?Address
-    {
-        foreach ($this->addresses as $address) {
-            if ($address->type === 'MAILING') {
-                return $address;
-            }
-        }
-        return null;
-    }
 
     /**
      * @codeCoverageIgnore

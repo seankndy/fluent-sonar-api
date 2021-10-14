@@ -2,15 +2,16 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Queries\QueryBuilder;
 use SeanKndy\SonarApi\Reflection\Reflection;
-use SeanKndy\SonarApi\Types\BaseType;
-use Carbon\Carbon;
+use SeanKndy\SonarApi\Resources\Traits\HasAccessLogs;
+use SeanKndy\SonarApi\Resources\Traits\HasLogs;
 use Illuminate\Support\Str;
 use SeanKndy\SonarApi\Types\TypeInterface;
 
 abstract class BaseResource implements ResourceInterface
 {
+    use HasLogs, HasAccessLogs;
+
     public final function __construct(array $data = [])
     {
         foreach ($data as $key => $value) {

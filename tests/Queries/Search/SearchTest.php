@@ -71,6 +71,22 @@ class SearchTest extends TestCase
     }
 
     /** @test */
+    public function it_converts_field_to_snake_case_when_calling_where()
+    {
+        $array = (new Search())->where('fieldInCamel', '=', 'something')->toArray();
+
+        $this->assertEquals('field_in_camel', $array[0]['string_fields'][0]['attribute']);
+    }
+
+    /** @test */
+    public function it_converts_field_to_snake_case_when_calling_orWhere()
+    {
+        $array = (new Search())->where('field', '=', 'something')->orWhere('fieldInCamel', '=', 'something else')->toArray();
+
+        $this->assertEquals('field_in_camel', $array[1]['string_fields'][0]['attribute']);
+    }
+
+    /** @test */
     public function it_handles_multiple_wheres()
     {
         $search = (new Search())

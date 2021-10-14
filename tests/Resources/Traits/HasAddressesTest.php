@@ -1,12 +1,13 @@
 <?php
 
-namespace SeanKndy\SonarApi\Tests\Resources;
+namespace SeanKndy\SonarApi\Tests\Resources\Traits;
 
-use SeanKndy\SonarApi\Resources\Account;
 use SeanKndy\SonarApi\Resources\Address;
+use SeanKndy\SonarApi\Resources\BaseResource;
+use SeanKndy\SonarApi\Resources\Traits\HasAddresses;
 use SeanKndy\SonarApi\Tests\TestCase;
 
-class AccountTest extends TestCase
+class HasAddressesTest extends TestCase
 {
     /** @test */
     public function it_does_get_physical_address()
@@ -38,7 +39,7 @@ class AccountTest extends TestCase
             ],
         ]), false);
 
-        $resource = Account::fromJsonObject($jsonObject);
+        $resource = TestResource::fromJsonObject($jsonObject);
 
         $physicalAddress = $resource->physicalAddress();
 
@@ -76,7 +77,7 @@ class AccountTest extends TestCase
             ],
         ]), false);
 
-        $resource = Account::fromJsonObject($jsonObject);
+        $resource = TestResource::fromJsonObject($jsonObject);
 
         $mailingAddress = $resource->mailingAddress();
 
@@ -104,7 +105,7 @@ class AccountTest extends TestCase
             ],
         ]), false);
 
-        $resource = Account::fromJsonObject($jsonObject);
+        $resource = TestResource::fromJsonObject($jsonObject);
 
         $this->assertNull($resource->mailingAddress());
     }
@@ -129,8 +130,13 @@ class AccountTest extends TestCase
             ],
         ]), false);
 
-        $resource = Account::fromJsonObject($jsonObject);
+        $resource = TestResource::fromJsonObject($jsonObject);
 
         $this->assertNull($resource->physicalAddress());
     }
+}
+
+class TestResource extends BaseResource
+{
+    use HasAddresses;
 }

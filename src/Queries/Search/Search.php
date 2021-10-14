@@ -2,6 +2,8 @@
 
 namespace SeanKndy\SonarApi\Queries\Search;
 
+use Illuminate\Support\Str;
+
 class Search
 {
     /**
@@ -23,6 +25,8 @@ class Search
             throw new \InvalidArgumentException("Minimum of 2 arguments, maximum of 3.");
         }
         [$operator, $value] = $operatorAndValue;
+
+        $field = Str::snake($field);
 
         $search = clone $this;
 
@@ -78,6 +82,8 @@ class Search
             throw new \InvalidArgumentException("Minimum of 2 arguments, maximum of 3.");
         }
         [$operator, $value] = $operatorAndValue;
+
+        $field = Str::snake($field);
 
         $search = clone $this;
 

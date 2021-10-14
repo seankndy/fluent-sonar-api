@@ -2,10 +2,14 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
+use SeanKndy\SonarApi\Resources\Traits\HasAddresses;
+use SeanKndy\SonarApi\Resources\Traits\HasCustomFieldData;
 use SeanKndy\SonarApi\Types\Geopoint;
 
 class NetworkSite extends BaseResource
 {
+    use HasAddresses, HasCustomFieldData;
+
     public int $id;
 
     public ?Geopoint $geopoint;
@@ -32,14 +36,4 @@ class NetworkSite extends BaseResource
      * @var \SeanKndy\SonarApi\Resources\Job[]
      */
     public array $jobs;
-
-    /**
-     * @var \SeanKndy\SonarApi\Resources\Address[]
-     */
-    public array $addresses;
-
-    /**
-     * @var \SeanKndy\SonarApi\Resources\CustomFieldData[]
-     */
-    public array $customFieldData;
 }

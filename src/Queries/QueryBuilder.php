@@ -273,7 +273,7 @@ class QueryBuilder
             $queryBuilder->search = new Search();
         }
 
-        $queryBuilder->search = $queryBuilder->search->where(Str::snake($field), ...$args);
+        $queryBuilder->search = $queryBuilder->search->where($field, ...$args);
 
         return $queryBuilder;
     }
@@ -291,7 +291,7 @@ class QueryBuilder
             throw new \Exception("Cannot call orWhere() before where()!");
         }
 
-        $queryBuilder->search = $queryBuilder->search->orWhere(Str::snake($field), ...$args);
+        $queryBuilder->search = $queryBuilder->search->orWhere($field, ...$args);
 
         return $queryBuilder;
     }
