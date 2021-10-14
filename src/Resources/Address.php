@@ -14,6 +14,8 @@ class Address extends BaseResource
 
     public ?string $city;
 
+    public ?string $subdivision;
+
     public ?string $zip;
 
     public ?string $latitude;
