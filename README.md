@@ -183,6 +183,8 @@ $accounts = $client
     ->paginate(25, 1, 'http://site.com/some/path'); // 25 per page, 1st page, base url for links
 ```
 
+The underlying pagination is done on Sonar's side using Sonar's `Paginator` in GraphQL.
+
 # Creating Resource Objects
 
 Here is an example of how you can create your own resource objects (note that the Company object is already included in the library):
