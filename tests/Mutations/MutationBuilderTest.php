@@ -121,6 +121,7 @@ class MutationBuilderTest extends TestCase
                 'id!' =>  new Int64Bit('1234'),
                 'foo1' => 'test1',
                 'foo2!' => 'test2',
+                'foo3' => [new Int64Bit(1234), new Int64Bit(4567)],
                 'input' => new TestMutationInput([
                     'field1' => 'testing',
                 ]),
@@ -134,9 +135,37 @@ class MutationBuilderTest extends TestCase
             'id' => 'Int64Bit!',
             'foo1' => 'String',
             'foo2' => 'String!',
+            'foo3' => '[Int64Bit]',
             'input' => 'TestMutationInput',
             'inline_input' => 'TestType',
         ], $variables);
+    }
+
+    /** @test */
+    public function it_throws_exception_if_array_of_data_types_not_consistent()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("Array of elements for input variable 'foo' provided must be " .
+            "all of the same type, however there are types mixed.");
+
+        (new MutationBuilder())
+            ->return(DummyResource::class)
+            ->testMutation([
+                'foo' => [new Int64Bit(1234), new TestMutationInput(['field1' => 'testing'])],
+            ])->getQuery();
+    }
+
+    /** @test */
+    public function it_throws_exception_if_array_of_data_types_empty()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("Array for input variable 'foo' is empty.");
+
+        (new MutationBuilder())
+            ->return(DummyResource::class)
+            ->testMutation([
+                'foo' => [],
+            ])->getQuery();
     }
 
     /** @test */

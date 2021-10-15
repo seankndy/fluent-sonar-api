@@ -82,7 +82,7 @@ class MutationBuilder
                     : []
             );
 
-        return new Mutation($mutation, $this->variables());
+        return new Mutation($mutation, $this->variables($this->args));
     }
 
     /**
@@ -105,14 +105,16 @@ class MutationBuilder
         return $response;
     }
 
-    protected function variables(): array
+    protected function variables(array $args): array
     {
         $variables = [];
-        foreach ($this->args as $var => $value) {
+        foreach ($args as $var => $value) {
             $var = preg_replace('/!$/', '', $var);
 
             if ($value instanceof InputInterface) {
                 $variables[$var] = $value->toArray();
+            } else if (\is_array($value)) {
+                $variables[$var] = $this->variables($value);
             } else {
                 $variables[$var] = $value instanceof TypeInterface ? $value->value() : $value;
             }
@@ -134,23 +136,51 @@ class MutationBuilder
     {
         $variables = [];
         foreach ($this->args as $var => $value) {
-            if (substr($var, -1) === '!') {
+            if (\substr($var, -1) === '!') {
                 $required = true;
                 $var = \substr($var, 0, \strlen($var)-1);
             } else {
                 $required = false;
             }
 
-            if ($value instanceof InputInterface) {
-                $variables[] = new Variable($var, $value->typeName(), $required);
-            } else {
-                $variables[] = new Variable(
-                    $var,
-                    $value instanceof TypeInterface ? $value->name() : \ucfirst(gettype($value)),
-                    $required
-                );
-            }
+            $variables[] = $this->getGraphQlVariable($var, $value, $required);
         }
         return $variables;
+    }
+
+    /**
+     * @param mixed $value
+     */
+    protected function getGraphQlVariable(string $name, $value, bool $required = false): Variable
+    {
+        if (\is_array($value)) {
+            if (($firstKey = \array_key_first($value)) === null) {
+                throw new \RuntimeException("Array for input variable '$name' is empty.");
+            }
+
+            $firstValue = $value[$firstKey];
+            $array = true;
+
+            if (\array_filter($value, function ($v) use ($firstValue) {
+                return (gettype($v) == 'object' ? get_class($v) : gettype($v))
+                    !== (gettype($firstValue) == 'object' ? get_class($firstValue) : gettype($firstValue));
+            })) {
+                throw new \RuntimeException("Array of elements for input variable '$name' provided must be " .
+                    "all of the same type, however there are types mixed.");
+            }
+
+            $value = $firstValue;
+        } else {
+            $array = false;
+        }
+
+        $type = $value instanceof InputInterface
+            ? $value->typeName()
+            : ($value instanceof TypeInterface
+                ? $value->name()
+                : \ucfirst(gettype($value))
+              );
+
+        return new Variable($name, $array ? '['.$type.']' : $type, $required);
     }
 }

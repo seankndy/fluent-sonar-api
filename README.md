@@ -16,7 +16,7 @@ composer require seankndy/fluent-sonar-api
 
 Queries are done by calling the top level object name as a method and then chaining your filters, sorts, and relations to load.  Basic Accounts example:
 
-```
+```php
 <?php
 use SeanKndy\SonarApi\Client;
 use GuzzleHttp\Client as GuzzleClient;
@@ -40,7 +40,7 @@ Objects returned from Sonar's API need to be mapped to real PHP objects that the
 
 Relations are not queried by default and you must use the `with()` method to state which relations you want to load (as done above).  If you want to filter or sort the related resources you can do so with a closure:
 
-```
+```php
 <?php
 $accounts = $client
     ->accounts()
@@ -78,7 +78,7 @@ The following top level objects are supported by `Client` out of the box:
 
 You may extend and/or override these by passing a fourth argument to `Client`'s constructor:
 
-```
+```php
 <?php
 
 namespace App;
@@ -101,7 +101,7 @@ $client = new Client(
 
 When writing queries you can filter them using the where methods.  `where()` and `orWhere()` create Sonar search filter objects.  There are limitations to grouping search logic due to how the search filters work in Sonar's API.  It is probably simplest to just show various call structures supported and the resulting search logic they produce:
 
-```
+```php
 $client->someObjects()
     ->where('field1', 'foo')
     ->where('field2', '!=', 'bar');
@@ -137,7 +137,7 @@ $client->someObjects()
 
 `whereHas()`, `orWhereHas()`, `whereNotHas()` and `orWhereNotHas()` are also supported and these produce Sonar's ReverseRelationFilters.  They filter the current object based on the xfiltering of a related object.  Example showing a way to get only accounts that have related Addresses with a city of Chicago:
 
-```
+```php
 $client
     ->accounts()
     ->whereHas('addresses', fn($search) => $search->where('city', 'Chicago'))
@@ -150,7 +150,7 @@ The second argument is optional and if not passed then the filter will be for th
 
 `orWhereHas()` allows you to specify an ORed relation filter.  For example, let's get any account that has an address in Chicago OR the account has any invoices present at all:
 
-```
+```php
 $client
     ->accounts()
     ->whereHas('addresses', fn($search) => $search->where('city', 'Chicago'))
@@ -160,7 +160,7 @@ $client
 
 Lastly, you can use `whereNotHas()` and `orWhereNotHas()` to filter on the absence of a relation such as if you wanted to get all accounts that have NO tickets:
 
-```
+```php
 $client
     ->accounts()
     ->whereNotHas('tickets')
@@ -175,7 +175,7 @@ Not that any of the where-has type methods do not require that the relation be l
 
 Pagination is supported via Laravel/Illuminate's `LengthAwarePaginator`:
 
-```
+```php
 <?php
 $accounts = $client
     ->accounts()
@@ -189,7 +189,7 @@ The underlying pagination is done on Sonar's side using Sonar's `Paginator` in G
 
 Here is an example of how you can create your own resource objects (note that the Company object is already included in the library):
 
-```
+```php
 <?php
 
 namespace App\Support\SonarApi\Resources;
@@ -235,7 +235,7 @@ There are two ways to build typed input data:
  
 Here is an example of using the in-line approach for the type-based input `input`:
 
-```
+```php
 <?php
 use SeanKndy\SonarApi\Client;
 use SeanKndy\SonarApi\Resources\Ticket;
@@ -266,7 +266,7 @@ $ticket = $client
 
 Here is an example of the same mutation, but using a class-based approach to the input:
 
-```
+```php
 <?php
 use SeanKndy\SonarApi\Client;
 use SeanKndy\SonarApi\Resources\Ticket;
@@ -300,7 +300,7 @@ You may have noticed that `id` is an instance of `\SeanKndy\SonarApi\Types\Int64
 
 The class-based approach has the benefit of throwing exceptions if the field doesn't exist or the field value given does not match the type specified.  These can be created easily by extending `SeanKndy\SonarApi\Mutations\Inputs\BaseInput`:
 
-```
+```php
 <?php
   
 namespace App\Support\SonarApi\Mutations\Inputs;
@@ -320,7 +320,7 @@ class UpdateTicketMutationInput extends BaseInput
 
 Notice that the properties are all `protected` not `public`.  This is a requirement and if you extend `BaseInput` and declare public properties an exception will be thrown upon object instantiation.  The reason they're protected is because `BaseInput` controls setting the values of each property so it knows which properties to actually include in the mutation.  For example, say you want to update the ticket's `subject` field and nothing else.  You can do this by either:
 
-```
+```php
 $updateTicketMutationInput = new UpdateTicketMutationInput(['subject' => 'new subject']);
 ```
 
@@ -332,3 +332,66 @@ $updateTicketMutationInput->subject = 'new subject';
 ```
 
 `BaseInput` uses PHP's `__set()` method to set the protected property on your behalf here and also keep track of which properties have been set so it knows which to include in the mutation sent to Sonar.  If it didn't do this then it would send all the fields in the mutation and update fields that you never wanted updated to null/empty values.
+
+### Arrays of Types
+
+If you need to specify an array of types, you can do the following:
+
+```php
+<?php
+use SeanKndy\SonarApi\Client;
+use SeanKndy\SonarApi\Resources\SuccessResponse;
+use SeanKndy\SonarApi\Types\Int64Bit;
+use SeanKndy\SonarApi\Mutations\Inputs\InputBuilder;
+use GuzzleHttp\Client as GuzzleClient;
+
+$client = new Client(
+    new GuzzleClient(),
+    '<your api key>',
+    'https://your-sonar-instance.sonar.software'
+);
+
+// 
+// inline approach
+//
+$successResponse = $client
+    ->mutations()
+    ->createDataUsages([
+        // notice the type name wrapped in brackets [] below
+        'input' => fn(InputBuilder $input) => $input->type('[CreateDataUsageMutationInput]')->data([
+            [
+                'accountId' => net Int64Bit(12345),
+                'dataSourceIdentifier' => 'usage-collector1',
+                // etc
+            ],
+            // ...
+        ])
+    ])
+    ->return(SuccessResponse::class)
+    ->run()
+
+// 
+// class-based input approach
+//
+$successResponse = $client
+    ->mutations()
+    ->createDataUsages([
+        'input' => [
+            new CreateDataUsageMutationInput([
+                'accountId' => net Int64Bit(12345),
+                'dataSourceIdentifier' => 'usage-collector1',
+                // etc
+            ]),
+            new CreateDataUsageMutationInput([
+                //...
+            ]),
+            // ...
+        ],
+    ])
+    ->return(SuccessResponse::class)
+    ->run()
+```
+
+### `SuccessResponse`'s
+
+In the last example above we used a `SeanKndy\SonarApi\Resources\SuccessResponse` for the mutation return resource.  You'll see this response type on several mutations in Sonar that they use when there is no other appropriate response.  This is just to make you aware that this resource type is built-in for your use.
