@@ -8,7 +8,7 @@ class Address extends BaseResource
 
     public string $type;
 
-    public string $line1;
+    public ?string $line1;
 
     public ?string $line2;
 
