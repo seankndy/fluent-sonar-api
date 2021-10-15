@@ -2,6 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
+/**
+ * @codeCoverageIgnore
+ */
 class SuccessResponse implements ResourceInterface
 {
     public bool $success;

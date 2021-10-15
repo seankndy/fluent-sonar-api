@@ -581,6 +581,18 @@ class QueryBuilderTest extends TestCase
     }
 
     /** @test */
+    public function it_does_work_with_resource_that_does_not_extend_base_resource()
+    {
+        $queryBuilder = (new QueryBuilder(BasicDummyResource::class, 'dummy'));
+
+        $this->assertEquals([
+            'entities' => [
+                'var1'
+            ],
+        ], $this->getGraphQlQuerySelectionsAsArray($queryBuilder->getQuery()->query()));
+    }
+
+    /** @test */
     public function it_does_query_fields_from_nested_relations()
     {
         $queryBuilder = (new QueryBuilder(DummyResource::class, 'dummies'))
@@ -842,5 +854,20 @@ class DummyResourceThatHasADefaultWithThatHasNestedWith extends BaseResource
     public static function with(): array
     {
         return ['dummyResource' => fn($query) => $query->with('anotherDummyResource')];
+    }
+}
+
+class BasicDummyResource implements ResourceInterface
+{
+    public int $var1;
+
+    public function __construct(int $var1)
+    {
+        $this->var1 = $var1;
+    }
+
+    public static function fromJsonObject(object $jsonObject): ResourceInterface
+    {
+        return new self($jsonObject->var1);
     }
 }

@@ -2,7 +2,7 @@
 
 This is a Sonar Software (https://sonar.software) v2 GraphQL PHP API client with a fluent interface.  It aims to make your common fetch queries and mutations simple and somewhat Laravel Eloquent-like.
 
-A key benefit to using this library is that the resources and inputs are wrapped in real PHP objects allowing static analyzers to assist in preventing bugs and your IDE can do code completions.
+The key benefits of using this library is the fluent interface for a nice DX and the returned resources are real PHP objects allowing static analyzers to assist in preventing bugs and your IDE can do code completions.
 
 # Installation
 
@@ -224,7 +224,45 @@ A has-one relationship should be specified with the resource object such as `pub
 
 # Mutations
 
-Here is an example of running a mutation using one of the built-in mutation inputs provided by the library:
+Mutations are executed using the MutationQueryBuilder which is returned by calling `mutations()` on the client object.  Simply pass in the variables/argument as an associative array to the mutation name method call.  Variables that are required should have an exclamation (!) after the variable name like `id!` in the below example. 
+
+There are two ways to build typed input data:
+
+ 1) Entirely in-line using arrays and closures
+ 2) Write mutation input classes that extend `SeanKndy\SonarApi\Mutations\Inputs\BaseInput`.
+ 
+Here is an example of using the in-line approach for the type-based input `input`:
+
+```
+<?php
+use SeanKndy\SonarApi\Client;
+use SeanKndy\SonarApi\Resources\Ticket;
+use SeanKndy\SonarApi\Mutations\Inputs\InputBuilder;
+use SeanKndy\SonarApi\Types\Int64Bit;
+use GuzzleHttp\Client as GuzzleClient;
+
+$client = new Client(
+    new GuzzleClient(),
+    '<your api key>',
+    'https://your-sonar-instance.sonar.software'
+);
+
+$ticket = $client
+    ->mutations()
+    ->updateTicket([
+        'id!' => Int64Bit(12345),
+        'input' => fn(InputBuilder $input) => $input->type('UpdateTicketMutationInput')->data([
+            'subject' => 'An updated ticket subject',
+        ])
+    ])
+    ->return(Ticket::class)
+    ->run()
+ 
+// $ticket will be an instance of newly created \SeanKndy\SonarApi\Resources\Ticket object
+```
+
+
+Here is an example of the same mutation, but using a class-based approach to the input:
 
 ```
 <?php
@@ -254,13 +292,11 @@ $ticket = $client
 // $ticket will be an instance of newly created \SeanKndy\SonarApi\Resources\Ticket object
 ```
 
-Mutations are built by just calling the mutation name on the `MutationQueryBuilder` which is returned by the `mutations()` method on the client.  Simply pass in the variables/argument as an associative array to the mutation name method call.  Variables that are required should have an exclamation (!) after the variable name like `id!` in the above example.
-
 The `return()` method indicates what resource should be returned by the mutation.  Again, view Sonar's documentation to view each mutation's return type.
 
-You'll notice that `id` is an instance of `\SeanKndy\SonarApi\Types\Int64Bit`.  This is a wrapper type object which mocks the type within Sonar's GraphQL schema and is required for this mutation.  See Sonar's API documentation (https://api.sonar.software) to view any mutation's specifications.
+You may have noticed that `id` is an instance of `\SeanKndy\SonarApi\Types\Int64Bit`.  This is a wrapper type object which mocks the data type within Sonar's GraphQL schema and is required for this mutation.  See Sonar's API documentation (https://api.sonar.software) to view any mutation's specifications.
 
-Sonar has many MutationInput objects which are basically DTOs and such is the `UpdateTicketMutationInput` referenced above.   These can be created easily by extending `SeanKndy\SonarApi\Mutations\Inputs\BaseInput`:
+The class-based approach has the benefit of throwing exceptions if the field doesn't exist or the field value given does not match the type specified.  These can be created easily by extending `SeanKndy\SonarApi\Mutations\Inputs\BaseInput`:
 
 ```
 <?php

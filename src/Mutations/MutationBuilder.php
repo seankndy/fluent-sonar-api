@@ -4,7 +4,7 @@ namespace SeanKndy\SonarApi\Mutations;
 
 use GraphQL\Variable;
 use SeanKndy\SonarApi\Client;
-use SeanKndy\SonarApi\Mutations\Inputs\Input;
+use SeanKndy\SonarApi\Mutations\Inputs\InputInterface;
 use SeanKndy\SonarApi\Mutations\Inputs\InputBuilder;
 use SeanKndy\SonarApi\Queries\QueryBuilder;
 use SeanKndy\SonarApi\Resources\ResourceInterface;
@@ -111,7 +111,7 @@ class MutationBuilder
         foreach ($this->args as $var => $value) {
             $var = preg_replace('/!$/', '', $var);
 
-            if ($value instanceof Input) {
+            if ($value instanceof InputInterface) {
                 $variables[$var] = $value->toArray();
             } else {
                 $variables[$var] = $value instanceof TypeInterface ? $value->value() : $value;
@@ -141,7 +141,7 @@ class MutationBuilder
                 $required = false;
             }
 
-            if ($value instanceof Input) {
+            if ($value instanceof InputInterface) {
                 $variables[] = new Variable($var, $value->typeName(), $required);
             } else {
                 $variables[] = new Variable(

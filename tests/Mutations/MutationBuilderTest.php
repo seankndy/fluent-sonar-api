@@ -7,6 +7,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use SeanKndy\SonarApi\Client;
 use SeanKndy\SonarApi\Mutations\Inputs\BaseInput;
+use SeanKndy\SonarApi\Mutations\Inputs\InputBuilder;
 use SeanKndy\SonarApi\Mutations\MutationBuilder;
 use SeanKndy\SonarApi\Resources\ResourceInterface;
 use SeanKndy\SonarApi\Tests\Dummy\DummyResource;
@@ -122,7 +123,10 @@ class MutationBuilderTest extends TestCase
                 'foo2!' => 'test2',
                 'input' => new TestMutationInput([
                     'field1' => 'testing',
-                ])
+                ]),
+                'inline_input' => fn(InputBuilder $input): InputBuilder => $input->type('TestType')->data([
+                    'field2' => 'foobar',
+                ]),
             ])->getQuery();
 
         $variables = $this->getGraphQlQueryVariableDeclarations($query->query());
@@ -130,7 +134,8 @@ class MutationBuilderTest extends TestCase
             'id' => 'Int64Bit!',
             'foo1' => 'String',
             'foo2' => 'String!',
-            'input' => 'TestMutationInput'
+            'input' => 'TestMutationInput',
+            'inline_input' => 'TestType',
         ], $variables);
     }
 
@@ -145,10 +150,13 @@ class MutationBuilderTest extends TestCase
                 'foo2!' => 'test2',
                 'input' => new TestMutationInput([
                     'field1' => 'testing',
-                ])
+                ]),
+                'inline_input' => fn(InputBuilder $input): InputBuilder => $input->type('TestType')->data([
+                    'field2' => 'foobar',
+                ]),
             ])->getQuery();
 
-        $this->assertMatchesRegularExpression('/mutation\(.+?\) {[\r\n\s]+testMutation\(id: \$id foo1: \$foo1 foo2: \$foo2 input: \$input\)/s', (string)$query->query());
+        $this->assertMatchesRegularExpression('/mutation\(.+?\) {[\r\n\s]+testMutation\(id: \$id foo1: \$foo1 foo2: \$foo2 input: \$input inline_input: \$inline_input\)/s', (string)$query->query());
     }
 
     /** @test */

@@ -26,20 +26,15 @@ class InputBuilder
 
     public function build(): Input
     {
-        return new DynamicInput($this->type, $this->resolvedData());
-    }
-
-    private function resolvedData(): array
-    {
-        $vars = [];
+        $data = [];
         foreach ($this->data as $var => $value) {
             if (\is_callable($value)) {
-                $vars[$var] = $value(new self)->build();
+                $data[$var] = $value(new self)->build();
             } else {
-                $vars[$var] = $value;
+                $data[$var] = $value;
             }
         }
-        return $vars;
-    }
 
+        return new Input($this->type, $data);
+    }
 }

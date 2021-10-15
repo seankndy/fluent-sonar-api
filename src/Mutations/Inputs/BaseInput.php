@@ -12,7 +12,7 @@ use SeanKndy\SonarApi\Types\TypeInterface;
  *
  */
 
-abstract class BaseInput implements Input
+abstract class BaseInput implements InputInterface
 {
     protected array $declared = [];
 
@@ -86,9 +86,9 @@ abstract class BaseInput implements Input
         $type = $this->propertiesAndTypes[$var]->type();
         $arrayOf = $this->propertiesAndTypes[$var]->arrayOf();
 
-        if (is_a($type, Input::class, true)) {
+        if (is_a($type, InputInterface::class, true)) {
             if ($arrayOf) {
-                return \array_map(fn(Input $v): array => $v->toArray(), $this->$var);
+                return \array_map(fn(InputInterface $v): array => $v->toArray(), $this->$var);
             }
             return $this->$var->toArray();
         }
