@@ -127,7 +127,7 @@ class BaseInputTest extends TestCase
     /** @test */
     public function it_returns_base_class_name_when_calling_typeName()
     {
-        $this->assertEquals('TestInput', TestInput::typeName());
+        $this->assertEquals('TestInput', (new TestInput())->typeName());
     }
 }
 

@@ -64,7 +64,7 @@ abstract class BaseInput implements Input
     /**
      * Returns the base class name by default, may be overidden.
      */
-    public static function typeName(): string
+    public function typeName(): string
     {
         return (new \ReflectionClass(static::class))->getShortName();
     }

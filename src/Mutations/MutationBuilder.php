@@ -5,6 +5,7 @@ namespace SeanKndy\SonarApi\Mutations;
 use GraphQL\Variable;
 use SeanKndy\SonarApi\Client;
 use SeanKndy\SonarApi\Mutations\Inputs\Input;
+use SeanKndy\SonarApi\Mutations\Inputs\InputBuilder;
 use SeanKndy\SonarApi\Queries\QueryBuilder;
 use SeanKndy\SonarApi\Resources\ResourceInterface;
 use SeanKndy\SonarApi\Types\TypeInterface;
@@ -55,6 +56,12 @@ class MutationBuilder
         $mutationBuilder = clone $this;
         $mutationBuilder->name = $name;
         $mutationBuilder->args = $args;
+
+        foreach ($mutationBuilder->args as $var => $value) {
+            if (\is_callable($value)) {
+                $mutationBuilder->args[$var] = $value(new InputBuilder())->build();
+            }
+        }
 
         return $mutationBuilder;
     }
