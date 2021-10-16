@@ -35,7 +35,7 @@ class Reflection
         }
 
         if ($type === null && ($type = $property->getType()) !== null) {
-            /** @psalm-suppress UndefinedMethod */
+            /** @psalm-suppress PossiblyNullReference,UndefinedMethod */
             $type = $type->getName();
         }
 

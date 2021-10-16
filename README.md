@@ -14,7 +14,7 @@ composer require seankndy/fluent-sonar-api
 
 # Queries
 
-Queries are done by calling the top level object name as a method and then chaining your filters, sorts, and relations to load.  Basic Accounts example:
+Queries are done by calling the top level object name as a method and then chaining your filters, sorts, and relations to load.  The method name should be in camel-case and plural, for example to query network sites then the method name would be `networkSites()`.  Basic Accounts example:
 
 ```php
 <?php
@@ -53,30 +53,7 @@ $accounts = $client
 
 In the above example, tickets will be sorted ascending by the `created_at` field.
 
-The following top level objects are supported by `Client` out of the box:
-
-```
-   companies()
-   accounts()
-   accountServices()
-   accountStatuses()
-   customFields()
-   tickets()
-   contacts()
-   invoices()
-   networkSites()
-   radiusAccounts()
-   ipPools()
-   ipAssignments()
-   supernets()
-   subnets()
-   jobs()
-   jobTypes()
-   services()
-   users()
-```
-
-You may extend and/or override these by passing a fourth argument to `Client`'s constructor:
+If you want to supply your own resource class, you can do so by passing a fourth argument to `Client`'s constructor:
 
 ```php
 <?php
@@ -96,6 +73,10 @@ $client = new Client(
     ],
 );
 ```
+
+Now when calling `inventoryItems()` on the `Client` object a query builder using `App\Support\SonarApi\Resources\InventoryItem` will be used instead of the built-in InventoryItem class.
+
+
 
 ## where() and whereHas()
 

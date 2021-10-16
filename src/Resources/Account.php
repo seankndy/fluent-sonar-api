@@ -351,7 +351,7 @@ class Account extends BaseResource
     {
         return $this->name .
             (($physAddr = $this->physicalAddress())
-                ? " - " . $physAddr->line1 . ', ' . (string)$physAddr->line2 . ', ' .
+                ? " - " . (string)$physAddr->line1 . ', ' . (string)$physAddr->line2 . ', ' .
                     (string)$physAddr->city . ' ' . (string)$physAddr->zip
                 : ''
             );
