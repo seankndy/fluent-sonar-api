@@ -11,25 +11,8 @@ use SeanKndy\SonarApi\Queries\QueryInterface;
 use SeanKndy\SonarApi\Queries\QueryBuilder;
 use SeanKndy\SonarApi\Exceptions\SonarHttpException;
 use SeanKndy\SonarApi\Exceptions\SonarQueryException;
-use SeanKndy\SonarApi\Resources\Account;
-use SeanKndy\SonarApi\Resources\AccountService;
-use SeanKndy\SonarApi\Resources\AccountStatus;
-use SeanKndy\SonarApi\Resources\Company;
-use SeanKndy\SonarApi\Resources\Contact;
-use SeanKndy\SonarApi\Resources\CustomField;
-use SeanKndy\SonarApi\Resources\Invoice;
-use SeanKndy\SonarApi\Resources\IpAssignment;
-use SeanKndy\SonarApi\Resources\IpPool;
-use SeanKndy\SonarApi\Resources\Job;
-use SeanKndy\SonarApi\Resources\JobType;
-use SeanKndy\SonarApi\Resources\NetworkSite;
-use SeanKndy\SonarApi\Resources\RadiusAccount;
-use SeanKndy\SonarApi\Resources\Service;
-use SeanKndy\SonarApi\Resources\Subnet;
-use SeanKndy\SonarApi\Resources\Supernet;
-use SeanKndy\SonarApi\Resources\Ticket;
+use SeanKndy\SonarApi\Resources\ResourceInterface;
 use GuzzleHttp\ClientInterface as GuzzleClientInterface;
-use SeanKndy\SonarApi\Resources\User;
 
 class Client
 {
@@ -39,44 +22,32 @@ class Client
 
     private string $url;
 
-    private array $rootQueryBuilders = [];
+    private array $queryBuilders = [];
 
     public function __construct(
         GuzzleClientInterface $httpClient,
         string $apiKey,
         string $url,
-        array $rootQueryBuilders = []
+        array $queryBuilders = []
     ) {
         $this->httpClient = $httpClient;
         $this->apiKey = $apiKey;
         $this->url = $url;
-        $this->rootQueryBuilders = \array_merge([
-            'companies' => Company::class,
-            'accounts' => Account::class,
-            'accountServices' => AccountService::class,
-            'accountStatuses' => AccountStatus::class,
-            'customFields' => CustomField::class,
-            'tickets' => Ticket::class,
-            'contacts' => Contact::class,
-            'invoices' => Invoice::class,
-            'networkSites' => NetworkSite::class,
-            'radiusAccounts' => RadiusAccount::class,
-            'supernets' => Supernet::class,
-            'subnets' => Subnet::class,
-            'ipPools' => IpPool::class,
-            'ipAssignments' => IpAssignment::class,
-            'jobs' => Job::class,
-            'jobTypes' => JobType::class,
-            'services' => Service::class,
-            'users' => User::class,
-        ], $rootQueryBuilders);
+        $this->queryBuilders = $queryBuilders;
     }
 
     public function __call(string $name, array $args)
     {
-        if (isset($this->rootQueryBuilders[$name])) {
+        if (isset($this->queryBuilders[$name])) {
+            $class = $this->queryBuilders[$name];
+        } else {
+            $resourcesNamespace = '\\SeanKndy\\SonarApi\\Resources';
+            $class = $resourcesNamespace . '\\' . Str::studly(Str::singular($name));
+        }
+
+        if (\class_exists($class) && \is_a($class, ResourceInterface::class, true)) {
             return new QueryBuilder(
-                $this->rootQueryBuilders[$name],
+                $class,
                 Str::snake($name),
                 $this
             );
@@ -145,3 +116,4 @@ class Client
         return $this->query($mutation);
     }
 }
+

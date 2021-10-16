@@ -10,6 +10,13 @@ use SeanKndy\SonarApi\Types\Int64Bit;
 class ReflectionTest extends TestCase
 {
     /** @test */
+    public function it_allows_docblocks_to_be_on_typed_properties()
+    {
+        $properties = Reflection::getPropertiesAndTypes(new ClassThatHasPropertyWithTypeAndADocblock(), \ReflectionProperty::IS_PUBLIC);
+        $this->assertEquals('int', $properties['foo']->type());
+    }
+
+    /** @test */
     public function it_does_get_properties_and_types()
     {
         $public = Reflection::getPropertiesAndTypes(new DummyClass(), \ReflectionProperty::IS_PUBLIC);
@@ -61,4 +68,13 @@ class DummyClass
 class ClassThatHasPropertyWithNoType
 {
     public $foo;
+}
+
+
+class ClassThatHasPropertyWithTypeAndADocblock
+{
+    /**
+     * An integer.
+     */
+    public int $foo;
 }

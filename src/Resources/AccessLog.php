@@ -2,30 +2,74 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasLogs;
-use SeanKndy\SonarApi\Resources\Traits\HasNotes;
-
 class AccessLog extends BaseResource
 {
-    use HasNotes, HasLogs;
-
+    /**
+     * The ID of the entity.
+     */
     public int $id;
 
-    public \DateTime $accessDatetime;
-
-    public ?int $accessloggableId;
-
-    public ?string $accessloggableType;
-
-    public ?int $entityId;
-
-    public ?string $entityName;
-
-    public int $userId;
-
+    /**
+     * The date and time this entity was created.
+     */
     public \DateTime $createdAt;
 
+    /**
+     * The last date and time this entity was modified.
+     */
     public \DateTime $updatedAt;
 
-    public User $user;
+    /**
+     * The date and time that this entity was accessed.
+     */
+    public \DateTime $accessDatetime;
+
+    /**
+     * The ID of the entity that this access log belongs to.
+     */
+    public ?int $accessloggableId;
+
+    /**
+     * The entity that this access log belongs to.
+     */
+    public ?string $accessloggableType;
+
+    /**
+     * The ID of the entity that this access log belongs to.
+     */
+    public ?int $entityId;
+
+    /**
+     * The entity that this access log belongs to.
+     */
+    public ?string $entityName;
+
+    /**
+     * The ID of the user that accessed this entity.
+     */
+    public int $userId;
+
+    /**
+     * A user that can login to Sonar.
+     */
+    public ?User $user;
+
+    /**
+     * A note.
+     * @var \SeanKndy\SonarApi\Resources\Note[]
+     */
+    public array $notes;
+
+    /**
+     * A log entry.
+     * @var \SeanKndy\SonarApi\Resources\Log[]
+     */
+    public array $logs;
+
+    /**
+     * An access log history on an entity.
+     * @var \SeanKndy\SonarApi\Resources\AccessLog[]
+     */
+    public array $accessLogs;
+
 }

@@ -10,8 +10,6 @@ use SeanKndy\SonarApi\Types\TypeInterface;
 
 abstract class BaseResource implements ResourceInterface, RelationableResourceInterface
 {
-    use HasLogs, HasAccessLogs;
-
     public final function __construct(array $data = [])
     {
         foreach ($data as $key => $value) {

@@ -139,4 +139,9 @@ class HasAddressesTest extends TestCase
 class TestResource extends BaseResource
 {
     use HasAddresses;
+    
+    /**
+     * @var \SeanKndy\SonarApi\Resources\Address[]
+     */
+    public array $addresses;
 }

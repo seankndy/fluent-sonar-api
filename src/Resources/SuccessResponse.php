@@ -7,8 +7,14 @@ namespace SeanKndy\SonarApi\Resources;
  */
 class SuccessResponse implements ResourceInterface
 {
+    /**
+     * Will be true if the operation succeeded.
+     */
     public bool $success;
 
+    /**
+     * The message.
+     */
     public ?string $message;
 
     public function __construct(bool $success, string $message = null)

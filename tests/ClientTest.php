@@ -22,7 +22,7 @@ use SeanKndy\SonarApi\Tests\Dummy\DummyResource;
 class ClientTest extends TestCase
 {
     /** @test */
-    public function it_can_be_instantiated_with_root_query_builders()
+    public function it_can_be_instantiated_with_query_builders()
     {
         $client = new Client(
             $this->createMock(GuzzleClient::class),
@@ -38,7 +38,7 @@ class ClientTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_instantiated_with_an_overriding_root_query_builder()
+    public function it_can_be_instantiated_with_an_overriding_query_builder()
     {
         $client = new Client(
             $this->createMock(GuzzleClient::class),
@@ -174,3 +174,4 @@ class ClientTest extends TestCase
         $client->query($this->createMock(QueryInterface::class));
     }
 }
+

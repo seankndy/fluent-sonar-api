@@ -23,6 +23,7 @@ class Reflection
     {
         $type = null;
         $isArray = false;
+
         if ($docComment = $property->getDocComment()) {
             if (\preg_match('/@var\s+(.+)/', $docComment, $m)) {
                 $type = $m[1];
@@ -31,7 +32,9 @@ class Reflection
                     $isArray = true;
                 }
             }
-        } else if (($type = $property->getType()) !== null) {
+        }
+
+        if ($type === null && ($type = $property->getType()) !== null) {
             /** @psalm-suppress UndefinedMethod */
             $type = $type->getName();
         }
