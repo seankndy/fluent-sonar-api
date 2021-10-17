@@ -10,10 +10,29 @@ use SeanKndy\SonarApi\Types\Int64Bit;
 class ReflectionTest extends TestCase
 {
     /** @test */
-    public function it_allows_docblocks_to_be_on_typed_properties()
+    public function it_allows_docblocks_to_be_on_typed_properties_that_have_no_var_definition()
     {
         $properties = Reflection::getPropertiesAndTypes(new ClassThatHasPropertyWithTypeAndADocblock(), \ReflectionProperty::IS_PUBLIC);
+
         $this->assertEquals('int', $properties['foo']->type());
+    }
+
+    /** @test */
+    public function it_prefers_docblock_type_over_php_type_on_properties()
+    {
+        $properties = Reflection::getPropertiesAndTypes(new ClassThatHasPropertiesWithTypesAndADocblockTypes(), \ReflectionProperty::IS_PUBLIC);
+
+        $this->assertEquals('string', $properties['foo']->type());
+        $this->assertTrue($properties['foo']->arrayOf());
+    }
+
+    /** @test */
+    public function it_sets_arrayOf_if_php_type_is_array_but_still_uses_docblock_type_for_type()
+    {
+        $properties = Reflection::getPropertiesAndTypes(new ClassThatHasPropertiesWithTypesAndADocblockTypes(), \ReflectionProperty::IS_PUBLIC);
+
+        $this->assertEquals('\\SeanKndy\\SonarApi\\Tests\\Dummy\\DummyResource', $properties['bar']->type());
+        $this->assertTrue($properties['bar']->arrayOf());
     }
 
     /** @test */
@@ -77,4 +96,18 @@ class ClassThatHasPropertyWithTypeAndADocblock
      * An integer.
      */
     public int $foo;
+}
+
+
+class ClassThatHasPropertiesWithTypesAndADocblockTypes
+{
+    /**
+     * @var string[]
+     */
+    public array $foo;
+
+    /**
+     * @var \SeanKndy\SonarApi\Tests\Dummy\DummyResource
+     */
+    public array $bar;
 }

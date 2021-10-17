@@ -24,19 +24,24 @@ class Reflection
         $type = null;
         $isArray = false;
 
-        if ($docComment = $property->getDocComment()) {
-            if (\preg_match('/@var\s+(.+)/', $docComment, $m)) {
-                $type = $m[1];
-                if (\substr($type, -2) == '[]') {
-                    $type = \substr($type, 0, -2);
-                    $isArray = true;
-                }
+        if (($docComment = $property->getDocComment()) && \preg_match('/@var\s+(.+)/', $docComment, $m)) {
+            $type = $m[1];
+            if (\substr($type, -2) == '[]') {
+                $type = \substr($type, 0, -2);
+                $isArray = true;
             }
         }
 
-        if ($type === null && ($type = $property->getType()) !== null) {
+        if (($phpType = $property->getType()) !== null) {
             /** @psalm-suppress PossiblyNullReference,UndefinedMethod */
-            $type = $type->getName();
+            $phpTypeName = $phpType->getName();
+
+            if (!$type) {
+                $type = $phpTypeName;
+            }
+            if ($phpTypeName === 'array') {
+                $isArray = true;
+            }
         }
 
         if ($type === null) {
