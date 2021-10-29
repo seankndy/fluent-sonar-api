@@ -147,4 +147,14 @@ class Address extends BaseResource
      */
     public ?TowercoverageSubmission $towercoverageSubmission;
 
+    public function __toString(): string
+    {
+        $string = (string)$this->line1 . ', ';
+        if ($this->line2) {
+            $string .= $this->line2 . ', ';
+        }
+        $string .= (string)$this->city . ', ' . (string)$this->subdivision . ' ' . (string)$this->zip;
+
+        return $string;
+    }
 }
