@@ -115,5 +115,25 @@ class Client
     {
         return $this->query($mutation);
     }
+
+    /**
+     * @param class-string $resourceClass
+     */
+    public function newQuery(string $resourceClass): QueryBuilder
+    {
+        if (! \is_a($resourceClass, ResourceInterface::class, true)) {
+            throw new \InvalidArgumentException($resourceClass . " is not a " . ResourceInterface::class);
+        }
+
+        $name = Str::snake(
+            (new \ReflectionClass($resourceClass))->getShortName()
+        );
+
+        return new QueryBuilder(
+            $resourceClass,
+            $name,
+            $this
+        );
+    }
 }
 

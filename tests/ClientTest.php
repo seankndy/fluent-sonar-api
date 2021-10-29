@@ -17,6 +17,7 @@ use SeanKndy\SonarApi\Exceptions\SonarHttpException;
 use SeanKndy\SonarApi\Exceptions\SonarQueryException;
 use SeanKndy\SonarApi\Queries\QueryBuilder;
 use SeanKndy\SonarApi\Queries\QueryInterface;
+use SeanKndy\SonarApi\Resources\BillingSetting;
 use SeanKndy\SonarApi\Tests\Dummy\DummyResource;
 
 class ClientTest extends TestCase
@@ -173,5 +174,35 @@ class ClientTest extends TestCase
         $this->expectException(SonarFormatException::class);
         $client->query($this->createMock(QueryInterface::class));
     }
+
+    /** @test */
+    public function it_will_throw_exception_if_non_resource_class_passed_to_newQuery()
+    {
+        $client = new Client(
+            $this->createMock(GuzzleClient::class),
+            'testtoken',
+            'https://dummy.com'
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $client->newQuery(DummyClass::class);
+    }
+
+    /** @test */
+    public function it_sets_object_name_in_query_builder_to_snaked_resource_class_name_when_calling_newQuery()
+    {
+        $client = new Client(
+            $this->createMock(GuzzleClient::class),
+            'testtoken',
+            'https://dummy.com'
+        );
+
+        $query = $client->newQuery(BillingSetting::class);
+
+        $this->assertEquals('billing_setting', $query->getObjectName());
+    }
 }
 
+class DummyClass
+{
+}
