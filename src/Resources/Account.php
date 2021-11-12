@@ -3,15 +3,12 @@
 namespace SeanKndy\SonarApi\Resources;
 
 use SeanKndy\SonarApi\Resources\Traits\HasAddresses;
+use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
 
-class Account extends BaseResource
+class Account extends BaseResource implements IdentityInterface
 {
     use HasAddresses;
-
-    /**
-     * The ID of the entity.
-     */
-    public int $id;
+    use HasIdentity;
 
     /**
      * The date and time this entity was created.

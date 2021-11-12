@@ -2,12 +2,11 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-class VoiceProviderRateImport extends BaseResource
+use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
+
+class VoiceProviderRateImport extends BaseResource implements IdentityInterface
 {
-    /**
-     * The ID of the entity.
-     */
-    public int $id;
+    use HasIdentity;
 
     /**
      * The date and time this entity was created.

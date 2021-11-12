@@ -19,7 +19,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
-        "vimeo/psalm": "^4.10"
+        "vimeo/psalm": "^4.10",
+        "mikey179/vfsstream": "^1.6"
     },
     "autoload": {
         "psr-4": {

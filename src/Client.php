@@ -3,8 +3,8 @@
 namespace SeanKndy\SonarApi;
 
 use Illuminate\Support\Str;
+use Psr\Http\Message\ResponseInterface;
 use SeanKndy\SonarApi\Exceptions\SonarFormatException;
-use SeanKndy\SonarApi\Mutations\ClientMutator;
 use SeanKndy\SonarApi\Mutations\MutationBuilder;
 use SeanKndy\SonarApi\Mutations\MutationInterface;
 use SeanKndy\SonarApi\Queries\QueryInterface;
@@ -32,7 +32,7 @@ class Client
     ) {
         $this->httpClient = $httpClient;
         $this->apiKey = $apiKey;
-        $this->url = $url;
+        $this->url = \rtrim($url, '/');
         $this->queryBuilders = $queryBuilders;
     }
 
@@ -72,27 +72,19 @@ class Client
      */
     public function query(QueryInterface $query)
     {
-        try {
-            $response = $this->httpClient->request(
-                'POST',
-                sprintf('%s/api/graphql', $this->url),
-                [
-                    'http_errors' => true,
-                    'headers' => [
-                        'Authorization' => 'Bearer '.$this->apiKey,
-                        'Accept' => 'application/json',
-                    ],
-                    'json' => [
-                        'query' => (string)$query->query(),
-                        'variables' => $query->variables(),
-                    ]
-                ]
-            );
+        $response = $this->request(
+            'POST',
+            'api/graphql',
+            [
+                'http_errors' => true,
+                'json' => [
+                    'query' => (string)$query->query(),
+                    'variables' => $query->variables(),
+                ],
+            ]
+        );
 
-            $jsonObject = \json_decode($response->getBody()->getContents(), false);
-        } catch (\Exception $e) {
-            throw new SonarHttpException("Failed to POST to Sonar's GraphQL API: " . $e->getMessage());
-        }
+        $jsonObject = \json_decode($response->getBody()->getContents(), false);
 
         if (isset($jsonObject->errors) && $jsonObject->errors) {
             throw new SonarQueryException("Query returned errors.", $jsonObject->errors);
@@ -134,6 +126,40 @@ class Client
             $name,
             $this
         );
+    }
+
+    /**
+     * Make an HTTP request to Sonar, return ResponseInterface.
+     *
+     * @throws SonarHttpException
+     */
+    public function request(
+        string $method,
+        string $endpoint,
+        array $options = []
+    ): ResponseInterface {
+        $options['headers'] = \array_merge([
+            'Authorization' => 'Bearer '.$this->apiKey,
+            'Accept' => 'application/json',
+        ], $options['headers'] ?? []);
+
+        try {
+            return $this->httpClient->request(
+                $method,
+                sprintf('%s/%s', $this->url, $endpoint),
+                $options
+            );
+        } catch (\Throwable $e) {
+            throw new SonarHttpException("Failed to make HTTP request to Sonar's API: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get instance of file manager.
+     */
+    public function fileManager(): FileManager
+    {
+        return new FileManager($this);
     }
 }
 

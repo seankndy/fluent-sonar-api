@@ -2,12 +2,11 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-class Me extends BaseResource
+use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
+
+class Me extends BaseResource implements IdentityInterface
 {
-    /**
-     * The ID of the entity.
-     */
-    public int $id;
+    use HasIdentity;
 
     /**
      * A descriptive name.

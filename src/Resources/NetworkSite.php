@@ -2,16 +2,14 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
+use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
+
 use SeanKndy\SonarApi\Resources\Traits\HasAddresses;
 
-class NetworkSite extends BaseResource
+class NetworkSite extends BaseResource implements IdentityInterface
 {
     use HasAddresses;
-
-    /**
-     * The ID of the entity.
-     */
-    public int $id;
+    use HasIdentity;
 
     /**
      * The date and time this entity was created.

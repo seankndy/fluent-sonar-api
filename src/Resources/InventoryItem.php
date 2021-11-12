@@ -2,12 +2,11 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-class InventoryItem extends BaseResource
+use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
+
+class InventoryItem extends BaseResource implements IdentityInterface
 {
-    /**
-     * The ID of the entity.
-     */
-    public int $id;
+    use HasIdentity;
 
     /**
      * The date and time this entity was created.

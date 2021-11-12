@@ -2,12 +2,11 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-class Transaction extends BaseResource
+use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
+
+class Transaction extends BaseResource implements IdentityInterface
 {
-    /**
-     * The ID of the entity.
-     */
-    public int $id;
+    use HasIdentity;
 
     /**
      * The ID of an Account.

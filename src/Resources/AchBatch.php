@@ -2,12 +2,11 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-class AchBatch extends BaseResource
+use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
+
+class AchBatch extends BaseResource implements IdentityInterface
 {
-    /**
-     * The ID of the entity.
-     */
-    public int $id;
+    use HasIdentity;
 
     /**
      * The date and time this entity was created.

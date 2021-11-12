@@ -15,6 +15,7 @@ use SeanKndy\SonarApi\Client;
 use SeanKndy\SonarApi\Exceptions\SonarFormatException;
 use SeanKndy\SonarApi\Exceptions\SonarHttpException;
 use SeanKndy\SonarApi\Exceptions\SonarQueryException;
+use SeanKndy\SonarApi\FileManager;
 use SeanKndy\SonarApi\Queries\QueryBuilder;
 use SeanKndy\SonarApi\Queries\QueryInterface;
 use SeanKndy\SonarApi\Resources\BillingSetting;
@@ -200,6 +201,92 @@ class ClientTest extends TestCase
         $query = $client->newQuery(BillingSetting::class);
 
         $this->assertEquals('billing_setting', $query->getObjectName());
+    }
+
+    /** @test */
+    public function it_sets_authorization_and_accept_headers_in_request()
+    {
+        $guzzleMock = $this->createMock(GuzzleClient::class);
+
+        $guzzleMock
+            ->expects($this->once())
+            ->method('request')
+            ->with(
+                $this->anything(),
+                $this->anything(),
+                $this->callback(function ($arg) {
+                    return $arg['headers'] == [
+                        'Authorization' => 'Bearer testtoken',
+                        'Accept' => 'application/json',
+                    ];
+                })
+            );
+
+        $client = new Client(
+            $guzzleMock,
+            'testtoken',
+            'https://dummy.com'
+        );
+
+        $client->request('POST', 'foo/bar');
+    }
+
+    /** @test */
+    public function it_allows_header_overrides()
+    {
+        $guzzleMock = $this->createMock(GuzzleClient::class);
+
+        $guzzleMock
+            ->expects($this->once())
+            ->method('request')
+            ->with(
+                $this->anything(),
+                $this->anything(),
+                $this->callback(function ($arg) {
+                    return $arg['headers'] == [
+                        'Authorization' => 'foo',
+                        'Accept' => '*/*',
+                        'X-Something-Else' => 'bar',
+                    ];
+                })
+            );
+
+        $client = new Client(
+            $guzzleMock,
+            'testtoken',
+            'https://dummy.com'
+        );
+
+        $client->request('POST', 'foo/bar', [
+            'headers' => [
+                'Authorization' => 'foo',
+                'Accept' => '*/*',
+                'X-Something-Else' => 'bar',
+            ]
+        ]);
+    }
+
+    /** @test */
+    public function it_makes_request_to_the_provided_sonar_url()
+    {
+        $guzzleMock = $this->createMock(GuzzleClient::class);
+
+        $guzzleMock
+            ->expects($this->once())
+            ->method('request')
+            ->with(
+                $this->anything(),
+                'https://dummy.com/foo/bar',
+               $this->anything()
+            );
+
+        $client = new Client(
+            $guzzleMock,
+            'testtoken',
+            'https://dummy.com'
+        );
+
+        $client->request('POST', 'foo/bar');
     }
 }
 

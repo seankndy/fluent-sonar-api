@@ -26,6 +26,10 @@ class MutationBuilder
      */
     private ?string $returnResource;
     /**
+     * If populated, return only these fields from resource.
+     */
+    private array $returnResourceFields = [];
+    /**
      * Client required to run the mutation
      */
     private ?Client $client;
@@ -35,7 +39,7 @@ class MutationBuilder
         $this->client = $client;
     }
 
-    public function return(?string $returnResource): self
+    public function return(?string $returnResource, array $only = []): self
     {
         if ($returnResource && !is_a($returnResource, ResourceInterface::class, true)) {
             throw new \Exception("Argument must be null or a class that implements ".ResourceInterface::class.".");
@@ -43,6 +47,7 @@ class MutationBuilder
 
         $mutationBuilder = clone $this;
         $mutationBuilder->returnResource = $returnResource;
+        $mutationBuilder->returnResourceFields = $only;
 
         return $mutationBuilder;
     }
@@ -76,6 +81,7 @@ class MutationBuilder
                 $this->returnResource
                     ? (new QueryBuilder($this->returnResource, ''))
                     ->withMany(false)
+                    ->only($this->returnResourceFields ?: [])
                     ->getQuery()
                     ->query()
                     ->getSelectionSet()

@@ -205,6 +205,20 @@ class MutationBuilderTest extends TestCase
     }
 
     /** @test */
+    public function it_does_configure_proper_selections_in_graphql_when_only_argument_given_to_return()
+    {
+        $query = (new MutationBuilder())
+            ->return(DummyResource::class, ['id'])
+            ->testMutation([
+                'id!' =>  new Int64Bit('1234'),
+            ])->getQuery();
+
+        $this->assertEquals([
+            'id',
+        ], $query->query()->getSelectionSet());
+    }
+
+    /** @test */
     public function it_does_build_proper_variables_for_graphql()
     {
         $query = (new MutationBuilder())
