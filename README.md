@@ -376,3 +376,64 @@ $successResponse = $client
 ### `SuccessResponse`'s
 
 In the last example above we used a `SeanKndy\SonarApi\Resources\SuccessResponse` for the mutation return resource.  You'll see this response type on several mutations in Sonar that they use when there is no other appropriate response.  This is just to make you aware that this resource type is built-in for your use.
+
+# File Operations
+
+File operations in Sonar (upload and download) are supported.  Example of working with a file contained in Sonar:
+
+```php
+<?php
+use SeanKndy\SonarApi\Client;
+use GuzzleHttp\Client as GuzzleClient;
+
+$client = new Client(
+    new GuzzleClient(),
+    '<your api key>',
+    'https://your-sonar-instance.sonar.software'
+);
+
+// get the first file record associated to Account 1234
+$file = $client
+    ->files()
+    ->where('fileableId', 1234)
+    ->where('fileableType', 'Account')
+    ->first();
+
+// $file is just an API resource object.  now let's get a stream to the actual file data.
+$fileStream = $client
+    ->fileManager()
+    ->fileStream($file);
+    
+// $fileStream is now a stream resource
+```
+
+Example of uploading a file to Sonar:
+
+```php
+<?php
+use SeanKndy\SonarApi\Client;
+use GuzzleHttp\Client as GuzzleClient;
+
+$client = new Client(
+    new GuzzleClient(),
+    '<your api key>',
+    'https://your-sonar-instance.sonar.software'
+);
+
+// get Account 1234 -- we'll upload the file and associate it to this resource.
+$account = $client
+    ->accounts()
+    ->where('id', 1234)
+    ->first();
+
+// upload file, associate it to $account
+$file = $client
+    ->fileManager()
+    ->uploadFile(
+        '/path/to/file', // path or resource to file to upload
+        'testing.txt', // name to give file in Sonar
+        $account // resource to associate to file
+    );
+
+// $file is a \SeanKndy\SonarApi\Resources\File object representing the newly uploaded file.
+```
