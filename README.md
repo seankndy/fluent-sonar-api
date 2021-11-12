@@ -392,7 +392,7 @@ $client = new Client(
     'https://your-sonar-instance.sonar.software'
 );
 
-// get the first file record associated to Account 1234
+// get the first \SeanKndy\SonarApi\Resources\File resource associated to Account 1234
 $file = $client
     ->files()
     ->where('fileableId', 1234)
