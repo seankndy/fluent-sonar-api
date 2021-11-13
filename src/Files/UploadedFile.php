@@ -9,7 +9,6 @@ use SeanKndy\SonarApi\Exceptions\SonarFormatException;
 use SeanKndy\SonarApi\Exceptions\SonarHttpException;
 use SeanKndy\SonarApi\Exceptions\SonarQueryException;
 use SeanKndy\SonarApi\Mutations\Inputs\InputBuilder;
-use SeanKndy\SonarApi\Resources\File;
 use SeanKndy\SonarApi\Resources\IdentityInterface;
 
 class UploadedFile
@@ -55,21 +54,26 @@ class UploadedFile
      * @throws SonarFormatException
      * @throws SonarQueryException
      */
-    public function associateResource(IdentityInterface $resource): void
+    public function associateResource(IdentityInterface $resource, string $description = null): self
     {
+        $file = ['file_id' => $this->id];
+        if ($description) {
+            $file['description'] = $description;
+        }
+
         $this->client
             ->mutations()
             ->linkFileToEntity([
                 'input' => fn(InputBuilder $builder) => $builder->type('LinkFileToEntityMutationInput')->data([
                     'fileableType' => (new \ReflectionClass($resource))->getShortName(),
                     'fileableId' => $resource->id(),
-                    'files' => [
-                        ['file_id' => $this->id],
-                    ],
+                    'files' => [$file],
                 ])
             ])
-            ->return(File::class, [
+            ->return(\get_class($resource), [
                 'id',
             ])->run();
+
+        return $this;
     }
 }
