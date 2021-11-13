@@ -2,15 +2,19 @@
 
 namespace SeanKndy\SonarApi;
 
+use GuzzleHttp\Psr7\StreamWrapper;
 use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
+use SeanKndy\SonarApi\Exceptions\SonarFileUploadException;
 use SeanKndy\SonarApi\Exceptions\SonarFormatException;
+use SeanKndy\SonarApi\Files\UploadedFile;
 use SeanKndy\SonarApi\Mutations\MutationBuilder;
 use SeanKndy\SonarApi\Mutations\MutationInterface;
 use SeanKndy\SonarApi\Queries\QueryInterface;
 use SeanKndy\SonarApi\Queries\QueryBuilder;
 use SeanKndy\SonarApi\Exceptions\SonarHttpException;
 use SeanKndy\SonarApi\Exceptions\SonarQueryException;
+use SeanKndy\SonarApi\Resources\File;
 use SeanKndy\SonarApi\Resources\ResourceInterface;
 use GuzzleHttp\ClientInterface as GuzzleClientInterface;
 
@@ -98,10 +102,11 @@ class Client
     }
 
     /**
-     * @throws SonarHttpException
-     * @throws SonarQueryException
      * @return mixed
      * @codeCoverageIgnore
+     * @throws SonarQueryException
+     * @throws SonarFormatException
+     * @throws SonarHttpException
      */
     public function mutate(MutationInterface $mutation)
     {
@@ -155,11 +160,46 @@ class Client
     }
 
     /**
-     * Get instance of file manager.
+     * Get stream of the file data for \SeanKndy\SonarApi\Resources\File $file.
+     *
+     * @return resource
+     * @throws SonarHttpException
      */
-    public function fileManager(): FileManager
+    public function fileStream(File $file)
     {
-        return new FileManager($this);
+        $response = $this->request(
+            'GET',
+            'api/files/' . $file->id,
+            ['headers' => ['Accept' => '*/*']]
+        );
+
+        return StreamWrapper::getResource($response->getBody());
+    }
+
+    /**
+     * @throws SonarHttpException
+     * @throws SonarFormatException
+     * @throws SonarFileUploadException
+     */
+    public function uploadFile($fileResourceOrPath, string $name): UploadedFile
+    {
+        if (!\is_resource($fileResourceOrPath) && !($fileResourceOrPath = @\fopen($fileResourceOrPath, 'r'))) {
+            throw new \RuntimeException("The file given does not exist or is not readable.");
+        }
+
+        return UploadedFile::fromResponse($this->request(
+            'POST',
+            'api/files',
+            [
+                'multipart' => [
+                    [
+                        'name' => 'files[]',
+                        'contents' => $fileResourceOrPath,
+                        'filename' => $name,
+                    ]
+                ],
+            ]
+        ), $this);
     }
 }
 

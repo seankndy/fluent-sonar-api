@@ -95,6 +95,7 @@ class MutationBuilder
      * @return mixed
      * @throws \SeanKndy\SonarApi\Exceptions\SonarHttpException
      * @throws \SeanKndy\SonarApi\Exceptions\SonarQueryException
+     * @throws \SeanKndy\SonarApi\Exceptions\SonarFormatException
      */
     public function run()
     {

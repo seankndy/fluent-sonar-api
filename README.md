@@ -400,9 +400,7 @@ $file = $client
     ->first();
 
 // $file is just an API resource object.  now let's get a stream to the actual file data.
-$fileStream = $client
-    ->fileManager()
-    ->fileStream($file);
+$fileStream = $client->fileStream($file);
     
 // $fileStream is now a stream resource
 ```
@@ -427,13 +425,9 @@ $account = $client
     ->first();
 
 // upload file, associate it to $account
-$file = $client
-    ->fileManager()
+$client
     ->uploadFile(
         '/path/to/file', // path or resource to file to upload
-        'testing.txt', // name to give file in Sonar
-        $account // resource to associate to file
-    );
-
-// $file is a \SeanKndy\SonarApi\Resources\File object representing the newly uploaded file.
+        'testing.txt' // name to give file in Sonar
+    )->associateResource($account);
 ```
