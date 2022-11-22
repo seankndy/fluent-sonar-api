@@ -2,6 +2,8 @@
 
 namespace SeanKndy\SonarApi\Queries\Search;
 
+use SeanKndy\SonarApi\Types\Datetime;
+
 abstract class Criteria implements CriteriaInterface
 {
     protected string $field;
@@ -32,12 +34,20 @@ abstract class Criteria implements CriteriaInterface
      */
     public static function create(string $field, string $operator, $value): Criteria
     {
-        switch (gettype($value)) {
+        $type = gettype($value);
+        if ($type === 'object') {
+            $type = get_class($value);
+        }
+
+        switch ($type) {
             case 'integer':
                 $criteriaClass = IntegerCriteria::class;
                 break;
             case 'boolean':
                 $criteriaClass = BooleanCriteria::class;
+                break;
+            case Datetime::class:
+                $criteriaClass = DateTimeCriteria::class;
                 break;
             case 'NULL':
                 $criteriaClass = NullCriteria::class;
