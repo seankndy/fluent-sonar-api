@@ -59,6 +59,11 @@ class PurchaseOrder extends BaseResource implements IdentityInterface
     public int $inventoryLocationId;
 
     /**
+     * Whether or not the purchase order has been marked as being paid.
+     */
+    public bool $isPaid;
+
+    /**
      * The date and time that the inventory item status last changed.
      */
     public \DateTime $lastStatusChange;
@@ -82,11 +87,6 @@ class PurchaseOrder extends BaseResource implements IdentityInterface
      * The current status of this purchase order.
      */
     public string $status;
-
-    /**
-     * The ID of the tax that should be applied to each item sold by this vendor.
-     */
-    public ?int $taxId;
 
     /**
      * The ID of a vendor.

@@ -29,6 +29,11 @@ class PurchaseOrderItem extends BaseResource implements IdentityInterface
     public int $genericQuantityReceived;
 
     /**
+     * The order this item is shown in a list.
+     */
+    public int $listOrder;
+
+    /**
      * A descriptive name.
      */
     public ?string $name;
@@ -57,11 +62,6 @@ class PurchaseOrderItem extends BaseResource implements IdentityInterface
      * The current status of a purchase order item.
      */
     public string $status;
-
-    /**
-     * The ID of a tax that should be applied to this purchase order item, overriding the vendor`s default tax.
-     */
-    public ?int $taxId;
 
     /**
      * The quantity of a vendor item on a purchase order.
