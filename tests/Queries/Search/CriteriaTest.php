@@ -4,10 +4,14 @@ namespace SeanKndy\SonarApi\Tests\Queries\Search;
 
 use SeanKndy\SonarApi\Queries\Search\BooleanCriteria;
 use SeanKndy\SonarApi\Queries\Search\Criteria;
+use SeanKndy\SonarApi\Queries\Search\DateCriteria;
+use SeanKndy\SonarApi\Queries\Search\DatetimeCriteria;
 use SeanKndy\SonarApi\Queries\Search\IntegerCriteria;
 use SeanKndy\SonarApi\Queries\Search\NullCriteria;
 use SeanKndy\SonarApi\Queries\Search\StringCriteria;
 use SeanKndy\SonarApi\Tests\TestCase;
+use SeanKndy\SonarApi\Types\Date;
+use SeanKndy\SonarApi\Types\Datetime;
 
 class CriteriaTest extends TestCase
 {
@@ -59,6 +63,8 @@ class CriteriaTest extends TestCase
             [NULL, NullCriteria::class],
             ['test', StringCriteria::class],
             [12.23, StringCriteria::class],
+            [new Date('2022-01-01'), DateCriteria::class],
+            [new Datetime('2022-01-01 05:13:22'), DatetimeCriteria::class],
         ];
     }
 }
@@ -75,7 +81,7 @@ class TestCriteria extends Criteria
         return 'test_fields';
     }
 
-    public function toSonarObject()
+    public function toSonarObject(): array
     {
         return [
             'attribute' => $this->field,

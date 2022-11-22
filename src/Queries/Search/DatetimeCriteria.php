@@ -2,18 +2,18 @@
 
 namespace SeanKndy\SonarApi\Queries\Search;
 
-class DateTimeCriteria extends Criteria
+class DatetimeCriteria extends Criteria
 {
     public function fieldName(): string
     {
         return 'datetime_fields';
     }
 
-    public function toSonarObject()
+    public function toSonarObject(): array
     {
         return [
             'attribute' => $this->field,
-            'search_value' => $this->value,
+            'search_value' => (string)$this->value,
             'operator' => [
                 '=' => 'EQ',
                 '!=' => 'NEQ',
