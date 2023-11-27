@@ -5,6 +5,7 @@ namespace SeanKndy\SonarApi\Tests\Mutations;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Collection;
 use SeanKndy\SonarApi\Client;
 use SeanKndy\SonarApi\Mutations\Inputs\BaseInput;
 use SeanKndy\SonarApi\Mutations\Inputs\InputBuilder;
@@ -79,6 +80,41 @@ class MutationBuilderTest extends TestCase
 
         $this->assertInstanceOf(DummyResource::class, $resource);
         $this->assertEquals('Testing', $resource->name);
+    }
+
+    /** @test */
+    public function it_does_return_collection_of_resources_when_specifying_a_return_resource_and_response_is_array()
+    {
+        $client = new Client(
+            new GuzzleClient(['handler' => new MockHandler([
+                new Response(200, [], \json_encode([
+                    'data' => [
+                        'testMutation' => [
+                            [
+                                'name' => 'Testing 1',
+                            ],
+                            [
+                                'name' => 'Testing 2',
+                            ],
+                        ]
+                    ],
+                ]))
+            ])]),
+            'test_token',
+            'https://dummy.com'
+        );
+
+        $resources = (new MutationBuilder($client))
+            ->return(DummyResource::class)
+            ->testMutation([
+                'foo' => new Int64Bit(1234),
+            ])->run();
+
+        $this->assertInstanceOf(Collection::class, $resources);
+        $this->assertInstanceOf(DummyResource::class, $resources[0]);
+        $this->assertInstanceOf(DummyResource::class, $resources[1]);
+        $this->assertEquals('Testing 1', $resources[0]->name);
+        $this->assertEquals('Testing 2', $resources[1]->name);
     }
 
     /** @test */

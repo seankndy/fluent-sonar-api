@@ -23,7 +23,7 @@ class SuccessResponse implements ResourceInterface
         $this->message = $message;
     }
 
-    public static function fromJsonObject(object $jsonObject): ResourceInterface
+    public static function fromJsonObject($jsonObject)
     {
         return new self($jsonObject->success, $jsonObject->message);
     }
