@@ -866,7 +866,7 @@ class BasicDummyResource implements ResourceInterface
         $this->var1 = $var1;
     }
 
-    public static function fromJsonObject($jsonObject)
+    public static function fromJsonObject(object $jsonObject): self
     {
         return new self($jsonObject->var1);
     }

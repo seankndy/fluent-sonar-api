@@ -106,6 +106,11 @@ class MutationBuilder
         $response = $this->client->mutate($this->getQuery());
 
         if ($this->returnResource) {
+            if (is_array($response->{$this->name})) {
+                return collect($response->{$this->name})
+                    ->map(fn(object $entity): ResourceInterface => ($this->returnResource)::fromJsonObject($entity));
+            }
+
             return ($this->returnResource)::fromJsonObject($response->{$this->name});
         }
 

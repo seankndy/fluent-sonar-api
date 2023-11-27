@@ -117,13 +117,13 @@ class QueryBuilder
 
         $response = $this->client->query($this->getQuery());
 
-        if ($this->many) {
-            return ($this->resource)::fromJsonObject($response->{$this->objectName}->entities);
+        if (! $this->many) {
+            return $response->{$this->objectName}
+                ? ($this->resource)::fromJsonObject($response->{$this->objectName})
+                : null;
         }
-
-        return !empty($response->{$this->objectName})
-            ? ($this->resource)::fromJsonObject($response->{$this->objectName})
-            : null;
+        return collect($response->{$this->objectName}->entities)
+            ->map(fn(object $entity): ResourceInterface => ($this->resource)::fromJsonObject($entity));
     }
 
     /**
