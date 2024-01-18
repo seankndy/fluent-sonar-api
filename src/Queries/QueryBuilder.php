@@ -10,10 +10,13 @@ use SeanKndy\SonarApi\Resources\ResourceInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use SeanKndy\SonarApi\Support\Traits\Conditionable;
 
 /** @psalm-suppress PropertyNotSetInConstructor */
 class QueryBuilder
 {
+    use Conditionable;
+
     /**
      * The resource class this QueryBuilder is for.
      */
