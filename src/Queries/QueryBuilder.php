@@ -86,6 +86,10 @@ class QueryBuilder
      * Specifies the current RRF group.  Incremented every orWhereHas() call.
      */
     private int $currentReverseRelationFilterGroup = 1;
+    /**
+     * Specifies the timeout for the underlying Query (seconds).
+     */
+    private float $timeout = 60;
 
     public function __construct(
         string $resourceClass,
@@ -193,6 +197,18 @@ class QueryBuilder
     {
         $queryBuilder = clone $this;
         $queryBuilder->many = $many;
+
+        return $queryBuilder;
+    }
+
+
+    /**
+     * Set the Query's timeout.
+     */
+    public function withTimeout(float $timeout): self
+    {
+        $queryBuilder = clone $this;
+        $queryBuilder->timeout = $timeout;
 
         return $queryBuilder;
     }
@@ -481,7 +497,7 @@ class QueryBuilder
             }
         }
 
-        return new Query($graphQueryBuilder->getQuery(), $variables);
+        return new Query($graphQueryBuilder->getQuery(), $variables, $this->timeout);
     }
 
     /**

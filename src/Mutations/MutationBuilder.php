@@ -33,6 +33,10 @@ class MutationBuilder
      * Client required to run the mutation
      */
     private ?Client $client;
+    /**
+     * The mutation query timeout.
+     */
+    private float $timeout = 60;
 
     public function __construct(Client $client = null)
     {
@@ -71,6 +75,17 @@ class MutationBuilder
         return $mutationBuilder;
     }
 
+    /**
+     * Set the Query's timeout.
+     */
+    public function withTimeout(float $timeout): self
+    {
+        $queryBuilder = clone $this;
+        $queryBuilder->timeout = $timeout;
+
+        return $queryBuilder;
+    }
+
     public function getQuery(): MutationInterface
     {
         $mutation = new \GraphQL\Mutation($this->name);
@@ -88,7 +103,7 @@ class MutationBuilder
                     : []
             );
 
-        return new Mutation($mutation, $this->variables($this->args));
+        return new Mutation($mutation, $this->variables($this->args), $this->timeout);
     }
 
     /**

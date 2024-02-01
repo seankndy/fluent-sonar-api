@@ -80,6 +80,7 @@ class Client
             'POST',
             'api/graphql',
             [
+                'timeout' => $query->timeout(),
                 'http_errors' => true,
                 'json' => [
                     'query' => (string)$query->query(),

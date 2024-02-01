@@ -8,10 +8,13 @@ class Mutation implements MutationInterface
 
     private array $variables;
 
-    public function __construct(\GraphQL\Mutation $mutation, array $variables)
+    private float $timeout;
+
+    public function __construct(\GraphQL\Mutation $mutation, array $variables, float $timeout = 60)
     {
         $this->mutation = $mutation;
         $this->variables = $variables;
+        $this->timeout = $timeout;
     }
 
     public function query(): \GraphQL\Mutation
@@ -22,5 +25,10 @@ class Mutation implements MutationInterface
     public function variables(): array
     {
         return $this->variables;
+    }
+
+    public function timeout(): float
+    {
+        return $this->timeout;
     }
 }

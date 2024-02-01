@@ -111,6 +111,29 @@ class ClientTest extends TestCase
     }
 
     /** @test */
+    public function it_sets_timeout()
+    {
+        $handlerStack = HandlerStack::create(new MockHandler([
+            new Response(200, [], \json_encode(['data' => []]))
+        ]));
+        $container = [];
+        $handlerStack->push(GuzzleMiddleware::history($container));
+
+        $client = new Client(
+            new GuzzleClient(['handler' => $handlerStack]),
+            'test_api_token',
+            'https://dummy.com'
+        );
+
+        $client->query($this->createConfiguredMock(QueryInterface::class, [
+            'timeout' => 12.5,
+        ]));
+
+        $this->assertCount(1, $container);
+        $this->assertEquals(12.5, $container[0]['options']['timeout']);
+    }
+
+    /** @test */
     public function it_will_throw_sonar_http_exception_on_request_transfer_or_connection_exceptions()
     {
         $mockHandler = new MockHandler([
