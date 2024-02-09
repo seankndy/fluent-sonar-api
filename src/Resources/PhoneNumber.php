@@ -49,6 +49,11 @@ class PhoneNumber extends BaseResource implements IdentityInterface
     public int $phoneNumberTypeId;
 
     /**
+     * Whether or not SMS messages accepted.
+     */
+    public bool $smsOptIn;
+
+    /**
      * A phone number type (e.g. mobile, home, work.)
      */
     public ?PhoneNumberType $phoneNumberType;
