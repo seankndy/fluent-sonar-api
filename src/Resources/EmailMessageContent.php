@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class EmailMessageContent extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -47,6 +45,18 @@ class EmailMessageContent extends BaseResource implements IdentityInterface
      * An email message.
      */
     public ?EmailMessage $emailMessage;
+
+    /**
+     * An external reference to a dynamic template at SendGrid.
+     * @var \SeanKndy\SonarApi\Resources\SendgridDynamicTemplateExternalReference[]
+     */
+    public array $sendgridDynamicTemplateExternalReferences;
+
+    /**
+     * A file.
+     * @var \SeanKndy\SonarApi\Resources\File[]
+     */
+    public array $files;
 
     /**
      * A log entry.

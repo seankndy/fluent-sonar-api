@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class Job extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -17,6 +15,11 @@ class Job extends BaseResource implements IdentityInterface
      * The last date and time this entity was modified.
      */
     public \DateTime $updatedAt;
+
+    /**
+     * The serviceable address where this job was completed.
+     */
+    public ?string $addressOnCompletion;
 
     /**
      * Whether or not this is complete.
@@ -69,6 +72,16 @@ class Job extends BaseResource implements IdentityInterface
     public ?\DateTime $scheduledDatetime;
 
     /**
+     * The ID of the serviceable address account assignment future.
+     */
+    public ?int $serviceableAddressAccountAssignmentFutureId;
+
+    /**
+     * Indicates this entity has skipped the validations which would normally apply.
+     */
+    public bool $skipsValidation;
+
+    /**
      * The ID of a `Ticket`.
      */
     public ?int $ticketId;
@@ -87,6 +100,11 @@ class Job extends BaseResource implements IdentityInterface
      * The user that completed this `Job`.
      */
     public ?User $completedByUser;
+
+    /**
+     * An expected change of serviceable address account assignment.
+     */
+    public ?ServiceableAddressAccountAssignmentFuture $serviceableAddressAccountAssignmentFuture;
 
     /**
      * A user that can login to Sonar.

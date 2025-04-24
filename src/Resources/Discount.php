@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class Discount extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -112,6 +110,11 @@ class Discount extends BaseResource implements IdentityInterface
      * The name of a service.
      */
     public string $serviceName;
+
+    /**
+     * The type of transaction on this service.
+     */
+    public ?string $serviceTransactionType;
 
     /**
      * Whether this entity's taxes have been committed or not.

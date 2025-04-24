@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class InventoryItem extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -17,6 +15,11 @@ class InventoryItem extends BaseResource implements IdentityInterface
      * The last date and time this entity was modified.
      */
     public \DateTime $updatedAt;
+
+    /**
+     * The ID of an AccountService.
+     */
+    public ?int $accountServiceId;
 
     /**
      * The ID of the `User` that claimed this.
@@ -69,6 +72,16 @@ class InventoryItem extends BaseResource implements IdentityInterface
     public string $inventoryitemableType;
 
     /**
+     * A decimal latitude.
+     */
+    public ?string $latitude;
+
+    /**
+     * A decimal longitude.
+     */
+    public ?string $longitude;
+
+    /**
      * The metadata.
      */
     public ?string $metadata;
@@ -77,6 +90,16 @@ class InventoryItem extends BaseResource implements IdentityInterface
      * The overall status of an `InventoryItem` (the worse of ICMP/SNMP status).
      */
     public ?string $overallStatus;
+
+    /**
+     * The overridden status of an `InventoryItem`.
+     */
+    public ?string $overrideStatus;
+
+    /**
+     * The timestamp of when the override status last changed.
+     */
+    public ?\DateTime $overrideStatusLastChange;
 
     /**
      * The ID of the parent `InventoryItem`.
@@ -97,6 +120,16 @@ class InventoryItem extends BaseResource implements IdentityInterface
      * The purchase price of this item.
      */
     public ?int $purchasePrice;
+
+    /**
+     * The quantity of this inventory model.
+     */
+    public ?int $quantity;
+
+    /**
+     * The ID of the `InventoryItem` that this segment is a child of.
+     */
+    public ?int $segmentParentId;
 
     /**
      * The current SNMP monitoring status of an `InventoryItem`.
@@ -124,6 +157,16 @@ class InventoryItem extends BaseResource implements IdentityInterface
     public string $status;
 
     /**
+     * The unit of measurement price for this inventory item.
+     */
+    public ?int $umPrice;
+
+    /**
+     * The relationship between an `Account` and a `Service`.
+     */
+    public ?AccountService $accountService;
+
+    /**
      * A type of item stored in inventory.
      */
     public ?InventoryModel $inventoryModel;
@@ -149,10 +192,21 @@ class InventoryItem extends BaseResource implements IdentityInterface
     public ?User $claimedUser;
 
     /**
+     * The parent inventory item of a segment.
+     */
+    public ?InventoryItem $segmentParent;
+
+    /**
      * A ticket.
      * @var \SeanKndy\SonarApi\Resources\Ticket[]
      */
     public array $tickets;
+
+    /**
+     * An Adtran Mosaic audit record.
+     * @var \SeanKndy\SonarApi\Resources\AdtranMosaicAudit[]
+     */
+    public array $adtranMosaicAudits;
 
     /**
      * Data contained within an inventory item field.
@@ -189,6 +243,12 @@ class InventoryItem extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\InventoryItemEvent[]
      */
     public array $inventoryItemEvents;
+
+    /**
+     * A list of segments that this inventory item is parent of.
+     * @var \SeanKndy\SonarApi\Resources\InventoryItem[]
+     */
+    public array $segments;
 
     /**
      * An `SnmpOverride`.

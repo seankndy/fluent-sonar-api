@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class GpsTrackingProvider extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -24,14 +22,26 @@ class GpsTrackingProvider extends BaseResource implements IdentityInterface
     public bool $enabled;
 
     /**
+     * Whether OAuth authentication required.
+     */
+    public bool $oauthRequired;
+
+    /**
      * A type of GPS tracking provider.
      */
     public string $provider;
 
     /**
      * `GpsTrackingProvider` credentials.
+     * @var \SeanKndy\SonarApi\Resources\GpsTrackingProviderCredential[]
      */
-    public ?GpsTrackingProviderCredential $gpsTrackingProviderCredential;
+    public array $gpsTrackingProviderCredentials;
+
+    /**
+     * A vehicle.
+     * @var \SeanKndy\SonarApi\Resources\Vehicle[]
+     */
+    public array $vehicles;
 
     /**
      * A log entry.

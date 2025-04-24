@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class IpAssignment extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -94,5 +92,4 @@ class IpAssignment extends BaseResource implements IdentityInterface
         }
         return \strstr($this->subnet, ':') === false ? 32 : 128;
     }
-
 }

@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class User extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -97,6 +95,12 @@ class User extends BaseResource implements IdentityInterface
     public array $genericInventoryItems;
 
     /**
+     * An SMS outbound message.
+     * @var \SeanKndy\SonarApi\Resources\SmsOutboundMessage[]
+     */
+    public array $smsOutboundMessages;
+
+    /**
      * A log entry.
      * @var \SeanKndy\SonarApi\Resources\Log[]
      */
@@ -107,6 +111,18 @@ class User extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\AccessLog[]
      */
     public array $accessLogs;
+
+    /**
+     * The `Accounts` archived by a `User`.
+     * @var \SeanKndy\SonarApi\Resources\Account[]
+     */
+    public array $archivedAccounts;
+
+    /**
+     * An iCalendar calendar.
+     * @var \SeanKndy\SonarApi\Resources\CalendarIcal[]
+     */
+    public array $calendarIcals;
 
     /**
      * A debit.
@@ -145,6 +161,12 @@ class User extends BaseResource implements IdentityInterface
     public array $refundedPayments;
 
     /**
+     * A record of a `Payment` that was voided.
+     * @var \SeanKndy\SonarApi\Resources\VoidedPayment[]
+     */
+    public array $voidedPayments;
+
+    /**
      * A ticket.
      * @var \SeanKndy\SonarApi\Resources\Ticket[]
      */
@@ -161,6 +183,12 @@ class User extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\TicketComment[]
      */
     public array $ticketComments;
+
+    /**
+     * A subscription to notifications for an entity.
+     * @var \SeanKndy\SonarApi\Resources\Subscription[]
+     */
+    public array $subscriptions;
 
     /**
      * An override to a particular day and time a `ScheduleBlocker` would otherwise cover.
@@ -197,6 +225,12 @@ class User extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\OrderGroupUser[]
      */
     public array $orderGroupUsers;
+
+    /**
+     * A `StoredView` associated with a `User`.
+     * @var \SeanKndy\SonarApi\Resources\StoredViewUser[]
+     */
+    public array $storedViewUsers;
 
     /**
      * A vehicle.

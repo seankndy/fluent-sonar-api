@@ -2,13 +2,10 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasAddresses;
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class Account extends BaseResource implements IdentityInterface
 {
-    use HasAddresses;
-    use HasIdentity;
+    use Traits\HasIdentity;
+    use Traits\HasAddresses;
 
     /**
      * The date and time this entity was created.
@@ -41,6 +38,16 @@ class Account extends BaseResource implements IdentityInterface
     public ?string $activationTime;
 
     /**
+     * The date and time this entity was archived.
+     */
+    public ?\DateTime $archivedAt;
+
+    /**
+     * The ID of the `User` that archived this entity.
+     */
+    public ?int $archivedByUserId;
+
+    /**
      * The ID of the company that this entity operates under.
      */
     public int $companyId;
@@ -54,6 +61,16 @@ class Account extends BaseResource implements IdentityInterface
      * A geo-point.
      */
     public ?string $geopoint;
+
+    /**
+     * Whether or not this account is delinquent.
+     */
+    public bool $isDelinquent;
+
+    /**
+     * Whether or not the Account meets the eligibility criteria for archiving.
+     */
+    public ?bool $isEligibleForArchive;
 
     /**
      * A descriptive name.
@@ -96,21 +113,26 @@ class Account extends BaseResource implements IdentityInterface
     public ?Account $parentAccount;
 
     /**
+     * The `User` that archived an entity.
+     */
+    public ?User $archivedByUser;
+
+    /**
      * A company you do business as.
      */
     public ?Company $company;
-
-    /**
-     * A geographical address.
-     * @var \SeanKndy\SonarApi\Resources\Address[]
-     */
-    public array $addresses;
 
     /**
      * A contact person.
      * @var \SeanKndy\SonarApi\Resources\Contact[]
      */
     public array $contacts;
+
+    /**
+     * An email.
+     * @var \SeanKndy\SonarApi\Resources\Email[]
+     */
+    public array $emails;
 
     /**
      * An IP address assignment.
@@ -185,10 +207,10 @@ class Account extends BaseResource implements IdentityInterface
     public array $geoTaxZones;
 
     /**
-     * The data cap `TriggeredEmails` sent to this `Account` for the current billing cycle.
-     * @var \SeanKndy\SonarApi\Resources\TriggeredEmail[]
+     * The data cap `TriggeredMessages` sent to this `Account` for the current billing cycle.
+     * @var \SeanKndy\SonarApi\Resources\TriggeredMessage[]
      */
-    public array $usageTriggeredEmails;
+    public array $usageTriggeredMessages;
 
     /**
      * A credit card.
@@ -329,10 +351,10 @@ class Account extends BaseResource implements IdentityInterface
     public array $didAssignmentHistories;
 
     /**
-     * A call data record (CDR).
-     * @var \SeanKndy\SonarApi\Resources\CallDataRecord[]
+     * A call detail record (CDR).
+     * @var \SeanKndy\SonarApi\Resources\CallDetailRecord[]
      */
-    public array $callDataRecords;
+    public array $callDetailRecords;
 
     /**
      * A tracked event that has occurred for an `Account`.
@@ -340,17 +362,10 @@ class Account extends BaseResource implements IdentityInterface
      */
     public array $accountEvents;
 
-
     /**
-     * @codeCoverageIgnore
+     * An expected change of serviceable address account assignment.
+     * @var \SeanKndy\SonarApi\Resources\ServiceableAddressAccountAssignmentFuture[]
      */
-    public function __toString(): string
-    {
-        return $this->name .
-            (($physAddr = $this->physicalAddress())
-                ? " - " . (string)$physAddr
-                : ''
-            );
-    }
+    public array $serviceableAddressAccountAssignmentFutures;
 
 }

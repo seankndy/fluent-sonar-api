@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class VoiceServiceGenericParameter extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -19,6 +17,11 @@ class VoiceServiceGenericParameter extends BaseResource implements IdentityInter
     public \DateTime $updatedAt;
 
     /**
+     * If this service was prorated when added, this is the date it was prorated from.
+     */
+    public ?string $additionProrateDate;
+
+    /**
      * A human readable description.
      */
     public string $description;
@@ -27,6 +30,11 @@ class VoiceServiceGenericParameter extends BaseResource implements IdentityInter
      * The price per unit of this item.
      */
     public int $price;
+
+    /**
+     * Indicates if changes to this entity trigger proration.
+     */
+    public bool $proratable;
 
     /**
      * The ID of a tax definition on a reversed transaction.
@@ -60,10 +68,22 @@ class VoiceServiceGenericParameter extends BaseResource implements IdentityInter
     public array $accountVoiceServiceDetails;
 
     /**
+     * The `AccountVoiceServiceDetail` records used to configure a voice service when a `ScheduledEvent` is executed.
+     * @var \SeanKndy\SonarApi\Resources\ScheduledEventAccountVoiceServiceDetail[]
+     */
+    public array $scheduledEventAccountVoiceServiceDetails;
+
+    /**
      * The `TaxDefinition` pair associated to this entity.
      * @var \SeanKndy\SonarApi\Resources\VoiceServiceGenericParameterTaxDefinition[]
      */
     public array $taxDefinitions;
+
+    /**
+     * The relationship between a `VoiceServiceGenericParameter` and a `Tax`.
+     * @var \SeanKndy\SonarApi\Resources\VoiceServiceGenericParameterTax[]
+     */
+    public array $voiceServiceGenericParameterTaxes;
 
     /**
      * A note.

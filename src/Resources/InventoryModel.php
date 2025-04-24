@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class InventoryModel extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -49,6 +47,11 @@ class InventoryModel extends BaseResource implements IdentityInterface
     public int $inventoryModelCategoryId;
 
     /**
+     * Whether or not inventory item can be broken down into segments.
+     */
+    public bool $isSegmentable;
+
+    /**
      * If this is a SIM card for LTE provisioning, which provider this SIM is for.
      */
     public ?string $lteSimType;
@@ -82,6 +85,16 @@ class InventoryModel extends BaseResource implements IdentityInterface
      * The protocol used to access the web interface.
      */
     public ?string $protocol;
+
+    /**
+     * The quantity of this inventory model.
+     */
+    public ?int $quantity;
+
+    /**
+     * The unit of measurement for this inventory model.
+     */
+    public ?string $unitOfMeasurement;
 
     /**
      * A manufacturer of an item stored in inventory.
@@ -134,6 +147,12 @@ class InventoryModel extends BaseResource implements IdentityInterface
     public array $accessLogs;
 
     /**
+     * An Adtran Mosaic audit record.
+     * @var \SeanKndy\SonarApi\Resources\AdtranMosaicAudit[]
+     */
+    public array $adtranMosaicAudits;
+
+    /**
      * A field on an inventory model.
      * @var \SeanKndy\SonarApi\Resources\InventoryModelField[]
      */
@@ -162,6 +181,24 @@ class InventoryModel extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\GenericInventoryItemActionLog[]
      */
     public array $genericInventoryItemActionLogs;
+
+    /**
+     * An entity which maps an inventory model field to a vendor specific integration field type (ie serial number)
+     * @var \SeanKndy\SonarApi\Resources\IntegrationFieldMapping[]
+     */
+    public array $integrationFieldMappings;
+
+    /**
+     * Defines the minimum and maximum of an inventory level for all locations per inventory model.
+     * @var \SeanKndy\SonarApi\Resources\GlobalInventoryModelMinMax[]
+     */
+    public array $globalInventoryModelMinMaxes;
+
+    /**
+     * Defines the minimum and maximum of an inventory level per location per inventory model.
+     * @var \SeanKndy\SonarApi\Resources\InventoryModelMinMax[]
+     */
+    public array $inventoryModelMinMaxes;
 
     /**
      * An alerting rotation.

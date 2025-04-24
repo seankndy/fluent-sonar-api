@@ -2,14 +2,10 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
-use SeanKndy\SonarApi\Resources\Traits\HasAddresses;
-
 class TowercoverageSubmission extends BaseResource implements IdentityInterface
 {
-    use HasAddresses;
-    use HasIdentity;
+    use Traits\HasIdentity;
+    use Traits\HasAddresses;
 
     /**
      * The date and time this entity was created.
@@ -30,6 +26,11 @@ class TowercoverageSubmission extends BaseResource implements IdentityInterface
      * The full name.
      */
     public ?string $fullName;
+
+    /**
+     * is_visible of the information
+     */
+    public bool $isVisible;
 
     /**
      * The message.
@@ -70,12 +71,6 @@ class TowercoverageSubmission extends BaseResource implements IdentityInterface
      * The serviceable address.
      */
     public ?Address $serviceableAddress;
-
-    /**
-     * A geographical address.
-     * @var \SeanKndy\SonarApi\Resources\Address[]
-     */
-    public array $addresses;
 
     /**
      * A file.

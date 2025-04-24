@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class Debit extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -52,6 +50,11 @@ class Debit extends BaseResource implements IdentityInterface
      * The ID of an `Invoice`.
      */
     public ?int $invoiceId;
+
+    /**
+     * The ID of the Debit which is linked to the current Debit.
+     */
+    public ?int $linkedDebitId;
 
     /**
      * The total number of minutes.
@@ -114,6 +117,11 @@ class Debit extends BaseResource implements IdentityInterface
     public string $serviceName;
 
     /**
+     * The type of transaction on this service.
+     */
+    public ?string $serviceTransactionType;
+
+    /**
      * The type.
      */
     public string $type;
@@ -162,6 +170,11 @@ class Debit extends BaseResource implements IdentityInterface
      * The user that caused a reversal.
      */
     public ?User $reversedByUser;
+
+    /**
+     * The `Debit` linked to subsidy.
+     */
+    public ?Debit $linkedDebit;
 
     /**
      * A discount.

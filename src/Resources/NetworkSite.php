@@ -2,14 +2,10 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
-use SeanKndy\SonarApi\Resources\Traits\HasAddresses;
-
 class NetworkSite extends BaseResource implements IdentityInterface
 {
-    use HasAddresses;
-    use HasIdentity;
+    use Traits\HasIdentity;
+    use Traits\HasAddresses;
 
     /**
      * The date and time this entity was created.
@@ -37,6 +33,11 @@ class NetworkSite extends BaseResource implements IdentityInterface
     public string $name;
 
     /**
+     * Network site serviceable address list.
+     */
+    public ?NetworkSiteServiceableAddressList $networkSiteServiceableAddressList;
+
+    /**
      * A contact person.
      * @var \SeanKndy\SonarApi\Resources\Contact[]
      */
@@ -61,12 +62,6 @@ class NetworkSite extends BaseResource implements IdentityInterface
     public array $inventoryItems;
 
     /**
-     * A geographical address.
-     * @var \SeanKndy\SonarApi\Resources\Address[]
-     */
-    public array $addresses;
-
-    /**
      * An IP address assignment.
      * @var \SeanKndy\SonarApi\Resources\IpAssignment[]
      */
@@ -89,6 +84,12 @@ class NetworkSite extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\GenericInventoryItemActionLog[]
      */
     public array $genericInventoryItemActionLogs;
+
+    /**
+     * An email.
+     * @var \SeanKndy\SonarApi\Resources\Email[]
+     */
+    public array $emails;
 
     /**
      * A note.
@@ -131,5 +132,23 @@ class NetworkSite extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\AlertingRotation[]
      */
     public array $alertingRotations;
+
+    /**
+     * Tickets that are linked to this item.
+     * @var \SeanKndy\SonarApi\Resources\Ticket[]
+     */
+    public array $linkedTickets;
+
+    /**
+     * Map Overlay.
+     * @var \SeanKndy\SonarApi\Resources\MapOverlay[]
+     */
+    public array $mapOverlays;
+
+    /**
+     * FiberMap plan.
+     * @var \SeanKndy\SonarApi\Resources\FibermapPlan[]
+     */
+    public array $fibermapPlans;
 
 }

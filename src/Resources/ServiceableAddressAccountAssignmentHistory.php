@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class ServiceableAddressAccountAssignmentHistory extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -42,6 +40,11 @@ class ServiceableAddressAccountAssignmentHistory extends BaseResource implements
      * A customer account.
      */
     public ?Account $account;
+
+    /**
+     * A geographical address.
+     */
+    public ?Address $address;
 
     /**
      * A log entry.

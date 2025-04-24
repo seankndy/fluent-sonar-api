@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class SystemSetting extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -27,6 +25,16 @@ class SystemSetting extends BaseResource implements IdentityInterface
      * Invoices will be created in both English and French for all customers.
      */
     public ?bool $bilingualInvoices;
+
+    /**
+     * If enabled allow external calendar integrations to sync.
+     */
+    public bool $calendarAllowExternalSync;
+
+    /**
+     * Number of months to sync calendar history, 0-3 allowed.  Future will always sync.
+     */
+    public int $calendarHistorySyncMaximum;
 
     /**
      * A city.
@@ -64,6 +72,31 @@ class SystemSetting extends BaseResource implements IdentityInterface
     public string $decimalSeparator;
 
     /**
+     * The id of the Email Domain to use in email From address.
+     */
+    public ?int $defaultMessageFromEmailDomainId;
+
+    /**
+     * The default user name to use in email From address.  For example the 'jane' in jane@domain.com
+     */
+    public ?string $defaultMessageFromEmailUserPrefix;
+
+    /**
+     * The default name to use in email From fields
+     */
+    public ?string $defaultMessageFromName;
+
+    /**
+     * the id of the Phone Number to use as default sender for SMS messages.
+     */
+    public ?int $defaultMessageFromPhoneNumberId;
+
+    /**
+     * The default language for messages.
+     */
+    public ?string $defaultMessageLanguage;
+
+    /**
      * The character used to separate digits in numbers.
      */
     public string $digitSeparator;
@@ -72,6 +105,11 @@ class SystemSetting extends BaseResource implements IdentityInterface
      * The source for the company used to populate the DBA name on the FCC Form 477. Supports one of service, account, or default.
      */
     public string $fccForm477CompanySource;
+
+    /**
+     * Whether or not to disable the default sonar login and require the use of SSO.
+     */
+    public bool $forceSsoLoginWeb;
 
     /**
      * The starting number for system generated purchase order numbers.
@@ -99,6 +137,16 @@ class SystemSetting extends BaseResource implements IdentityInterface
     public ?string $longitude;
 
     /**
+     * The id of the default signature to use for Mass Messages.
+     */
+    public ?int $massMessageSignatureId;
+
+    /**
+     * If true then DHCP leases with Option82 remote_id will assign the IP address to a matching customer MAC address instead of a matching remote_id MAC address.
+     */
+    public ?bool $option82AssignToCustomerMac;
+
+    /**
      * If an invoice is past due, will include red watermark stamp saying "Past Due" in the local language.
      */
     public ?bool $pastDueStampInvoice;
@@ -107,6 +155,11 @@ class SystemSetting extends BaseResource implements IdentityInterface
      * A text prefix to use when automatically creating a new RADIUS account.
      */
     public string $radiusAccountPrefix;
+
+    /**
+     * The id of the default signature to use for Single Recipient Messages.
+     */
+    public ?int $singleRecipientSignatureId;
 
     /**
      * A state, province, or other country subdivision.
@@ -137,6 +190,11 @@ class SystemSetting extends BaseResource implements IdentityInterface
      * The timezone you want times in the system displayed in.
      */
     public string $timezone;
+
+    /**
+     * The id of the default signature to use for Triggered Messages.
+     */
+    public ?int $triggeredMessageSignatureId;
 
     /**
      * The system of units.

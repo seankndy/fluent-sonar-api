@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class Service extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -115,6 +113,12 @@ class Service extends BaseResource implements IdentityInterface
     public array $accountServices;
 
     /**
+     * The service items and overrides for linked billing defaults.
+     * @var \SeanKndy\SonarApi\Resources\BillingService[]
+     */
+    public array $billingServices;
+
+    /**
      * Fields that store metadata about individual instances of `Service`s.
      * @var \SeanKndy\SonarApi\Resources\ServiceMetadata[]
      */
@@ -179,6 +183,12 @@ class Service extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\VendorItem[]
      */
     public array $vendorItems;
+
+    /**
+     * An entity which maps a service to a vendor specific service name
+     * @var \SeanKndy\SonarApi\Resources\IntegrationServiceMapping[]
+     */
+    public array $integrationServiceMappings;
 
     /**
      * An account group.

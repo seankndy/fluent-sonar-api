@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class Contact extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -37,6 +35,11 @@ class Contact extends BaseResource implements IdentityInterface
      * A supported language.
      */
     public ?string $language;
+
+    /**
+     * Whether or not marketing messages accepted.
+     */
+    public ?bool $marketingOptIn;
 
     /**
      * A descriptive name.
@@ -71,6 +74,12 @@ class Contact extends BaseResource implements IdentityInterface
     public array $contracts;
 
     /**
+     * A categorization of a message by type.
+     * @var \SeanKndy\SonarApi\Resources\MessageCategory[]
+     */
+    public array $messageCategories;
+
+    /**
      * A categorization of an `Email` by type.
      * @var \SeanKndy\SonarApi\Resources\EmailCategory[]
      */
@@ -87,6 +96,12 @@ class Contact extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\Email[]
      */
     public array $emails;
+
+    /**
+     * An SMS outbound message.
+     * @var \SeanKndy\SonarApi\Resources\SmsOutboundMessage[]
+     */
+    public array $smsOutboundMessages;
 
     /**
      * Data entered into a `CustomField`.

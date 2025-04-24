@@ -2,14 +2,10 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
-use SeanKndy\SonarApi\Resources\Traits\HasAddresses;
-
 class Vendor extends BaseResource implements IdentityInterface
 {
-    use HasAddresses;
-    use HasIdentity;
+    use Traits\HasIdentity;
+    use Traits\HasAddresses;
 
     /**
      * The date and time this entity was created.
@@ -47,26 +43,16 @@ class Vendor extends BaseResource implements IdentityInterface
     public string $paymentTerms;
 
     /**
-     * The ID of the tax that should be applied to each item sold by this vendor.
-     */
-    public ?int $taxId;
-
-    /**
-     * A tax.
-     */
-    public ?Tax $tax;
-
-    /**
-     * A geographical address.
-     * @var \SeanKndy\SonarApi\Resources\Address[]
-     */
-    public array $addresses;
-
-    /**
      * A contact person.
      * @var \SeanKndy\SonarApi\Resources\Contact[]
      */
     public array $contacts;
+
+    /**
+     * An email.
+     * @var \SeanKndy\SonarApi\Resources\Email[]
+     */
+    public array $emails;
 
     /**
      * A note.
@@ -103,5 +89,11 @@ class Vendor extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\PurchaseOrder[]
      */
     public array $purchaseOrders;
+
+    /**
+     * A tax.
+     * @var \SeanKndy\SonarApi\Resources\Tax[]
+     */
+    public array $taxes;
 
 }

@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class Invoice extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -24,12 +22,12 @@ class Invoice extends BaseResource implements IdentityInterface
     public int $accountId;
 
     /**
-     * The number of times that auto pay has been attempted.
+     * The number of times that autopay has been attempted.
      */
     public int $autoPayAttempts;
 
     /**
-     * The date that auto pay will be attempted.
+     * The date that autopay will be attempted.
      */
     public ?string $autoPayDate;
 
@@ -74,6 +72,11 @@ class Invoice extends BaseResource implements IdentityInterface
     public bool $frozen;
 
     /**
+     * The ID of the Invoice Template Version which was active when this invoice was generated.
+     */
+    public ?int $invoiceTemplateVersionId;
+
+    /**
      * Whether or not a late fee has been applied.
      */
     public bool $lateFeeApplied;
@@ -99,9 +102,19 @@ class Invoice extends BaseResource implements IdentityInterface
     public ?int $parentInvoiceId;
 
     /**
+     * Used by system to indicate the invoice has been marked to be sent to email contacts.
+     */
+    public bool $pendingEmail;
+
+    /**
      * The amount remaining to be paid.
      */
     public int $remainingDue;
+
+    /**
+     * The phase of the invoice moving through creation.
+     */
+    public string $status;
 
     /**
      * Whether this entity's taxes have been committed or not.
@@ -144,6 +157,11 @@ class Invoice extends BaseResource implements IdentityInterface
     public ?Company $company;
 
     /**
+     * A version of a template for generating invoices, preserved for historical purposes.
+     */
+    public ?InvoiceTemplateVersion $invoiceTemplateVersion;
+
+    /**
      * A tax provider.
      */
     public ?TaxProvider $taxProvider;
@@ -172,15 +190,27 @@ class Invoice extends BaseResource implements IdentityInterface
     public array $childInvoices;
 
     /**
+     * An error associated with the print to mail order.
+     * @var \SeanKndy\SonarApi\Resources\PrintToMailOrderError[]
+     */
+    public array $printToMailOrderErrors;
+
+    /**
      * A record of a monthly billing cycle.
      */
     public ?MonthlyBillingCompletion $monthlyBillingCompletion;
 
     /**
-     * An `Email` that is sent when a particular event occurs.
-     * @var \SeanKndy\SonarApi\Resources\TriggeredEmail[]
+     * A message that is sent when a specific event occurs.
+     * @var \SeanKndy\SonarApi\Resources\TriggeredMessage[]
      */
-    public array $triggeredEmails;
+    public array $triggeredMessages;
+
+    /**
+     * A batch of invoices to mail and print.
+     * @var \SeanKndy\SonarApi\Resources\PrintToMailBatch[]
+     */
+    public array $printToMailBatches;
 
     /**
      * A log entry.

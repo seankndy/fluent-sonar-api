@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class InlineDevice extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -22,6 +20,16 @@ class InlineDevice extends BaseResource implements IdentityInterface
      * Whether this device should write entries for all subnets or not.
      */
     public bool $allSubnets;
+
+    /**
+     * Whether or not a bandwidth collection request is queued.
+     */
+    public bool $bandwidthCollectionQueued;
+
+    /**
+     * The date/time that bandwidth collection started.
+     */
+    public ?\DateTime $bandwidthCollectionStart;
 
     /**
      * Whether or not this is enabled.
@@ -46,7 +54,7 @@ class InlineDevice extends BaseResource implements IdentityInterface
     /**
      * A TCP port.
      */
-    public string $port;
+    public ?string $port;
 
     /**
      * The status.
@@ -90,6 +98,12 @@ class InlineDevice extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\Note[]
      */
     public array $notes;
+
+    /**
+     * A `Notification`.
+     * @var \SeanKndy\SonarApi\Resources\Notification[]
+     */
+    public array $notifications;
 
     /**
      * A log entry.

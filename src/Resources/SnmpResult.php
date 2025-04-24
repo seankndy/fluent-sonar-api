@@ -10,6 +10,26 @@ class SnmpResult extends BaseResource
     public string $value;
 
     /**
+     * The minimum value found in the period
+     */
+    public ?int $minValue;
+
+    /**
+     * The maximum value found in the period
+     */
+    public ?int $maxValue;
+
+    /**
+     * The average value found in the period
+     */
+    public ?int $avgValue;
+
+    /**
+     * The number of datapoints found in the period
+     */
+    public ?int $countValue;
+
+    /**
      * The time.
      */
     public \DateTime $time;

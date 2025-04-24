@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class Payment extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -44,6 +42,11 @@ class Payment extends BaseResource implements IdentityInterface
     public int $companyId;
 
     /**
+     * A token sent to the payment provider during payment creation.
+     */
+    public ?string $creationToken;
+
+    /**
      * The ID of a CreditCard.
      */
     public ?int $creditCardId;
@@ -59,9 +62,34 @@ class Payment extends BaseResource implements IdentityInterface
     public ?string $description;
 
     /**
+     * The fee for this transaction.
+     */
+    public ?int $fee;
+
+    /**
+     * The fee for this transaction in fractional cents
+     */
+    public ?int $fractionalFee;
+
+    /**
      * The entire response back from the company that processed the transaction. Not typically human readable.
      */
     public ?string $fullProcessorResponse;
+
+    /**
+     * Whether or not this payment passed the 3DS security check.
+     */
+    public ?bool $passed3dsCheck;
+
+    /**
+     * Whether or not this payment passed the AVS security check.
+     */
+    public ?bool $passedAvsCheck;
+
+    /**
+     * Whether or not this payment passed the CVV security check.
+     */
+    public ?bool $passedCvvCheck;
 
     /**
      * The date and time the payment was made.
@@ -84,9 +112,19 @@ class Payment extends BaseResource implements IdentityInterface
     public ?string $processorMessage;
 
     /**
+     * The status of the payment provided by the payment processor.
+     */
+    public ?string $processorStatus;
+
+    /**
      * A payment reference like a check number, or wire transfer confirmation number.
      */
     public ?string $reference;
+
+    /**
+     * The status.
+     */
+    public ?string $status;
 
     /**
      * Whether or not this was successful.
@@ -135,6 +173,12 @@ class Payment extends BaseResource implements IdentityInterface
     public array $credits;
 
     /**
+     * A disbursement detail.
+     * @var \SeanKndy\SonarApi\Resources\DisbursementDetail[]
+     */
+    public array $disbursementDetails;
+
+    /**
      * A log entry.
      * @var \SeanKndy\SonarApi\Resources\Log[]
      */
@@ -157,5 +201,17 @@ class Payment extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\RefundedPayment[]
      */
     public array $refundedPayments;
+
+    /**
+     * A record of a `Payment` that was voided.
+     * @var \SeanKndy\SonarApi\Resources\VoidedPayment[]
+     */
+    public array $voidedPayments;
+
+    /**
+     * A dispute.
+     * @var \SeanKndy\SonarApi\Resources\Dispute[]
+     */
+    public array $disputes;
 
 }

@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class Ticket extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -34,6 +32,11 @@ class Ticket extends BaseResource implements IdentityInterface
     public ?int $closedByUserId;
 
     /**
+     * The ID of the company that this entity operates under.
+     */
+    public ?int $companyId;
+
+    /**
      * A human readable description.
      */
     public string $description;
@@ -57,6 +60,11 @@ class Ticket extends BaseResource implements IdentityInterface
      * The priority of this item.
      */
     public string $priority;
+
+    /**
+     * Mail processor's spam rating for whether or not this is spam.
+     */
+    public ?float $spamScore;
 
     /**
      * The status.
@@ -126,6 +134,12 @@ class Ticket extends BaseResource implements IdentityInterface
     public array $inventoryItems;
 
     /**
+     * A network site.
+     * @var \SeanKndy\SonarApi\Resources\NetworkSite[]
+     */
+    public array $networkSites;
+
+    /**
      * A ticket recipient.
      * @var \SeanKndy\SonarApi\Resources\TicketRecipient[]
      */
@@ -174,10 +188,22 @@ class Ticket extends BaseResource implements IdentityInterface
     public array $notifications;
 
     /**
+     * A subscription to notifications for an entity.
+     * @var \SeanKndy\SonarApi\Resources\Subscription[]
+     */
+    public array $subscriptions;
+
+    /**
      * A task.
      * @var \SeanKndy\SonarApi\Resources\Task[]
      */
     public array $tasks;
+
+    /**
+     * Data entered into a `CustomField`.
+     * @var \SeanKndy\SonarApi\Resources\CustomFieldData[]
+     */
+    public array $customFieldData;
 
     /**
      * A log entry.
@@ -191,11 +217,15 @@ class Ticket extends BaseResource implements IdentityInterface
      */
     public array $accessLogs;
 
+    /**
+     * Get the latest TicketReply.
+     *
+     * @return TicketReply|null
+     */
     public function latestReply(): ?TicketReply
     {
         return collect($this->ticketReplies)->sortByDesc(function(TicketReply $reply): int {
             return $reply->createdAt->getTimestamp();
         })->first();
     }
-
 }

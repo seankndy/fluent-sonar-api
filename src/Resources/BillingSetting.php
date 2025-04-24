@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class BillingSetting extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -62,6 +60,26 @@ class BillingSetting extends BaseResource implements IdentityInterface
      * The number of days between retries for credit card automatic payments.
      */
     public int $autopayCreditCardRetryIntervalInDays;
+
+    /**
+     * Autopay the account disconnect invoice.
+     */
+    public ?bool $autopayDisconnectInvoice;
+
+    /**
+     * The number of days between invoice date and the Autopay date.
+     */
+    public ?int $autopayDisconnectInvoiceDays;
+
+    /**
+     * Autopay the initial invoice.
+     */
+    public ?bool $autopayInitialInvoice;
+
+    /**
+     * The number of days between invoice date and the Autopay date.
+     */
+    public ?int $autopayInitialInvoiceDays;
 
     /**
      * Whether the automatic payment process should just run the invoice amount, or the entire amount due on the account.
@@ -134,6 +152,11 @@ class BillingSetting extends BaseResource implements IdentityInterface
     public bool $generateInvoiceOnInitialActivation;
 
     /**
+     * Whether or not to include late fee invoices in printed batches.
+     */
+    public bool $includeLateFeeInvoicesInPrintedBatches;
+
+    /**
      * Whether to invoice and email late fees immediately, or add them to the next invoice.
      */
     public bool $invoiceAndEmailLateFeesImmediately;
@@ -174,9 +197,19 @@ class BillingSetting extends BaseResource implements IdentityInterface
     public int $minimumCreditCardPayment;
 
     /**
+     * Printed invoice batch duplex.
+     */
+    public bool $printedInvoiceBatchDuplex;
+
+    /**
      * The service ID of a one time `Service` to charge for accounts with `print_invoice` enabled in their `AccountBillingParameter`.
      */
     public ?int $printedInvoiceFeeServiceId;
+
+    /**
+     * Whether or not an account going delinquent or no longer delinquent is prorated by default.
+     */
+    public ?bool $prorateAccountDelinquencyStatusChange;
 
     /**
      * Whether or not changing the status from an active to inactive status is prorated by default.
@@ -204,6 +237,16 @@ class BillingSetting extends BaseResource implements IdentityInterface
     public bool $roundProratedAmounts;
 
     /**
+     * The `AccountStatus` for unarchived accounts.
+     */
+    public ?int $unarchiveAccountStatusId;
+
+    /**
+     * Use modular invoice templates for all invoices.
+     */
+    public bool $useInvoiceTemplates;
+
+    /**
      * The service used for late fee application.
      */
     public ?Service $lateFeeService;
@@ -217,6 +260,11 @@ class BillingSetting extends BaseResource implements IdentityInterface
      * The account status used when moving accounts into the post-delinquency state.
      */
     public ?AccountStatus $disconnectAccountStatus;
+
+    /**
+     * The account status used when unarchiving accounts.
+     */
+    public ?AccountStatus $unarchiveAccountStatus;
 
     /**
      * The account type.

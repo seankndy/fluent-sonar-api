@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class LteProvider extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -27,6 +25,11 @@ class LteProvider extends BaseResource implements IdentityInterface
      * Whether or not this is enabled.
      */
     public bool $enabled;
+
+    /**
+     * Whether or not a floating license model is used with BreezeVIEW.
+     */
+    public bool $floatingLicense;
 
     /**
      * The date and time this device was last synchronized.

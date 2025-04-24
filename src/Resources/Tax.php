@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class Tax extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -55,6 +53,24 @@ class Tax extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\TaxOverride[]
      */
     public array $taxOverrides;
+
+    /**
+     * The relationship between a `VoiceServiceGenericParameter` and a `Tax`.
+     * @var \SeanKndy\SonarApi\Resources\VoiceServiceGenericParameterTax[]
+     */
+    public array $voiceServiceGenericParameterTaxes;
+
+    /**
+     * A third party vendor of inventory models.
+     * @var \SeanKndy\SonarApi\Resources\Vendor[]
+     */
+    public array $vendors;
+
+    /**
+     * A line item on a purchase order.
+     * @var \SeanKndy\SonarApi\Resources\PurchaseOrderItem[]
+     */
+    public array $purchaseOrderItems;
 
     /**
      * A note.

@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class RefundedPayment extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -34,9 +32,19 @@ class RefundedPayment extends BaseResource implements IdentityInterface
     public int $paymentId;
 
     /**
+     * The unique tracking ID for this payment.
+     */
+    public ?string $paymentTrackerId;
+
+    /**
      * The response from the payment processor when this payment was submitted.
      */
     public ?string $processorResponseMessage;
+
+    /**
+     * The transaction ID from the credit card provider.
+     */
+    public ?string $transactionId;
 
     /**
      * The ID of a User.
@@ -52,6 +60,12 @@ class RefundedPayment extends BaseResource implements IdentityInterface
      * A user that can login to Sonar.
      */
     public ?User $user;
+
+    /**
+     * A disbursement detail.
+     * @var \SeanKndy\SonarApi\Resources\DisbursementDetail[]
+     */
+    public array $disbursementDetails;
 
     /**
      * A note.

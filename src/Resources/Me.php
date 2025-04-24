@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class Me extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * A descriptive name.
@@ -70,6 +68,11 @@ class Me extends BaseResource implements IdentityInterface
     public bool $reportBuilder;
 
     /**
+     * Whether or not a report viewer license is granted.
+     */
+    public bool $reportViewer;
+
+    /**
      * A list of `RecentItem`s that you've viewed.
      * @var \SeanKndy\SonarApi\Resources\RecentItem[]
      */
@@ -80,5 +83,11 @@ class Me extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\Vehicle[]
      */
     public array $vehicles;
+
+    /**
+     * Your personal authentication factors.
+     * @var \SeanKndy\SonarApi\Resources\AuthenticationFactor[]
+     */
+    public array $authenticationFactors;
 
 }

@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class CoreCreditCard extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -27,6 +25,11 @@ class CoreCreditCard extends BaseResource implements IdentityInterface
      * Whether or not this payment method is enabled for automatic payments.
      */
     public bool $auto;
+
+    /**
+     * The type of payment made by the card (e.g. Credit, Debit, Prepaid).
+     */
+    public ?string $cardPaymentType;
 
     /**
      * The ID of a CreditCardProcessor.

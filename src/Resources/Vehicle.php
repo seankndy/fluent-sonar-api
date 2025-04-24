@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class Vehicle extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -22,6 +20,76 @@ class Vehicle extends BaseResource implements IdentityInterface
      * A geo-point.
      */
     public ?string $geopoint;
+
+    /**
+     * Whether or not to always track the vehicle.
+     */
+    public bool $gpsTrackingAlways;
+
+    /**
+     * If not always, then track on Friday.
+     */
+    public bool $gpsTrackingDayFriday;
+
+    /**
+     * If not always, then track on Monday.
+     */
+    public bool $gpsTrackingDayMonday;
+
+    /**
+     * If not always, then track on Saturday.
+     */
+    public bool $gpsTrackingDaySaturday;
+
+    /**
+     * If not always, then track on Sunday.
+     */
+    public bool $gpsTrackingDaySunday;
+
+    /**
+     * If not always, then track on Thursday.
+     */
+    public bool $gpsTrackingDayThursday;
+
+    /**
+     * If not always, then track on Tuesday.
+     */
+    public bool $gpsTrackingDayTuesday;
+
+    /**
+     * If not always, then track on Wednesday.
+     */
+    public bool $gpsTrackingDayWednesday;
+
+    /**
+     * Whether or not GPS Tracking enabled for vehicle.
+     */
+    public bool $gpsTrackingEnabled;
+
+    /**
+     * If not always, end time for tracking.
+     */
+    public string $gpsTrackingEndTime;
+
+    /**
+     * A `GpsTrackingProvider` ID.
+     */
+    public ?int $gpsTrackingProviderId;
+
+    /**
+     * If not always, start time for tracking.
+     */
+    public string $gpsTrackingStartTime;
+
+    /**
+     * If not always, timezone for start and end times.
+     */
+    public ?string $gpsTrackingTimezone;
+
+    /**
+     * A GPS Tracking Provider vehicle unique identifier.
+     */
+    public ?string $gpsTrackingUid;
 
     /**
      * The manufacturer.
@@ -47,6 +115,11 @@ class Vehicle extends BaseResource implements IdentityInterface
      * A year.
      */
     public ?int $year;
+
+    /**
+     * A `GpsTrackingProvider`.
+     */
+    public ?GpsTrackingProvider $gpsTrackingProvider;
 
     /**
      * An inventory item.

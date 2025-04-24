@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class BankAccountProcessor extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -44,6 +42,18 @@ class BankAccountProcessor extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\BankAccountProcessorCredential[]
      */
     public array $bankAccountProcessorCredentials;
+
+    /**
+     * A disbursement.
+     * @var \SeanKndy\SonarApi\Resources\Disbursement[]
+     */
+    public array $disbursements;
+
+    /**
+     * A company you do business as.
+     * @var \SeanKndy\SonarApi\Resources\Company[]
+     */
+    public array $companies;
 
     /**
      * A log entry.

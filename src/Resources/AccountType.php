@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class AccountType extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -60,6 +58,12 @@ class AccountType extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\AlertingRotation[]
      */
     public array $alertingRotations;
+
+    /**
+     * A template for generating invoices.
+     * @var \SeanKndy\SonarApi\Resources\InvoiceTemplate[]
+     */
+    public array $invoiceTemplates;
 
     /**
      * A RADIUS group.

@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class EmailCategory extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -33,6 +31,12 @@ class EmailCategory extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\Contact[]
      */
     public array $contacts;
+
+    /**
+     * A message that is sent when a specific event occurs.
+     * @var \SeanKndy\SonarApi\Resources\TriggeredMessage[]
+     */
+    public array $triggeredMessages;
 
     /**
      * An `Email` that is sent when a particular event occurs.

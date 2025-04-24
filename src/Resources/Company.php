@@ -2,14 +2,10 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
-use SeanKndy\SonarApi\Resources\Traits\HasAddresses;
-
 class Company extends BaseResource implements IdentityInterface
 {
-    use HasAddresses;
-    use HasIdentity;
+    use Traits\HasIdentity;
+    use Traits\HasAddresses;
 
     /**
      * The date and time this entity was created.
@@ -20,6 +16,16 @@ class Company extends BaseResource implements IdentityInterface
      * The last date and time this entity was modified.
      */
     public \DateTime $updatedAt;
+
+    /**
+     * The daily end time of the period during which billing communication e.g. new invoices, delinquency, etc. will not be sent.
+     */
+    public ?string $billingCommunicationDelayEndLocalTime;
+
+    /**
+     * The daily start time of the period during which billing communication e.g. new invoices, delinquency, etc. will not be sent.
+     */
+    public ?string $billingCommunicationDelayStartLocalTime;
 
     /**
      * On an enabled remittance slip, who should checks be made payable to?
@@ -135,10 +141,16 @@ class Company extends BaseResource implements IdentityInterface
     public array $discounts;
 
     /**
-     * A geographical address.
-     * @var \SeanKndy\SonarApi\Resources\Address[]
+     * A department in a company.
+     * @var \SeanKndy\SonarApi\Resources\CompanyDepartment[]
      */
-    public array $addresses;
+    public array $companyDepartments;
+
+    /**
+     * An external reference to a dynamic template at SendGrid.
+     * @var \SeanKndy\SonarApi\Resources\SendgridDynamicTemplateExternalReference[]
+     */
+    public array $sendgridDynamicTemplateExternalReferences;
 
     /**
      * A note.
@@ -169,5 +181,23 @@ class Company extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\CustomField[]
      */
     public array $customFields;
+
+    /**
+     * A company that processes `CreditCard` transactions.
+     * @var \SeanKndy\SonarApi\Resources\CreditCardProcessor[]
+     */
+    public array $creditCardProcessors;
+
+    /**
+     * A processor or method of processing bank account payments.
+     * @var \SeanKndy\SonarApi\Resources\BankAccountProcessor[]
+     */
+    public array $bankAccountProcessors;
+
+    /**
+     * A template for generating invoices.
+     * @var \SeanKndy\SonarApi\Resources\InvoiceTemplate[]
+     */
+    public array $invoiceTemplates;
 
 }

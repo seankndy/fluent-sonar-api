@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class VoiceProvider extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -30,6 +28,12 @@ class VoiceProvider extends BaseResource implements IdentityInterface
     public array $dids;
 
     /**
+     * A recipe for importing DIDs.
+     * @var \SeanKndy\SonarApi\Resources\DidImportRecipe[]
+     */
+    public array $didImportRecipes;
+
+    /**
      * A voice provider rate.
      * @var \SeanKndy\SonarApi\Resources\VoiceProviderRate[]
      */
@@ -42,16 +46,28 @@ class VoiceProvider extends BaseResource implements IdentityInterface
     public array $voiceProviderRateImports;
 
     /**
-     * A call data record (CDR).
-     * @var \SeanKndy\SonarApi\Resources\CallDataRecord[]
+     * A recipe for importing voice provider rates.
+     * @var \SeanKndy\SonarApi\Resources\VoiceProviderRateImportRecipe[]
      */
-    public array $callDataRecords;
+    public array $voiceProviderRateImportRecipes;
 
     /**
-     * An import of call data records (CDRs).
-     * @var \SeanKndy\SonarApi\Resources\CallDataRecordImport[]
+     * A call detail record (CDR).
+     * @var \SeanKndy\SonarApi\Resources\CallDetailRecord[]
      */
-    public array $callDataRecordImports;
+    public array $callDetailRecords;
+
+    /**
+     * An import of call detail records (CDRs).
+     * @var \SeanKndy\SonarApi\Resources\CallDetailRecordImport[]
+     */
+    public array $callDetailRecordImports;
+
+    /**
+     * A recipe for importing call detail records (CDRs).
+     * @var \SeanKndy\SonarApi\Resources\CallDetailRecordImportRecipe[]
+     */
+    public array $callDetailRecordImportRecipes;
 
     /**
      * A note.

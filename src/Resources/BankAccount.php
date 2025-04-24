@@ -2,13 +2,10 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-use SeanKndy\SonarApi\Resources\Traits\HasAddresses;
-
 class BankAccount extends BaseResource implements IdentityInterface
 {
-    use HasAddresses;
-    use HasIdentity;
+    use Traits\HasIdentity;
+    use Traits\HasAddresses;
 
     /**
      * The date and time this entity was created.
@@ -74,12 +71,6 @@ class BankAccount extends BaseResource implements IdentityInterface
      * A processor or method of processing bank account payments.
      */
     public ?BankAccountProcessor $bankAccountProcessor;
-
-    /**
-     * A geographical address.
-     * @var \SeanKndy\SonarApi\Resources\Address[]
-     */
-    public array $addresses;
 
     /**
      * A note.

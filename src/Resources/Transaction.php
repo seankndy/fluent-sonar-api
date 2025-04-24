@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class Transaction extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The ID of an Account.
@@ -72,5 +70,10 @@ class Transaction extends BaseResource implements IdentityInterface
      * A customer account.
      */
     public Account $account;
+
+    /**
+     * Whether or not this was successful.
+     */
+    public ?bool $successful;
 
 }

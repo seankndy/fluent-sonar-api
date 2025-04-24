@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class TriggeredEmail extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -17,6 +15,11 @@ class TriggeredEmail extends BaseResource implements IdentityInterface
      * The last date and time this entity was modified.
      */
     public \DateTime $updatedAt;
+
+    /**
+     * Whether or not child accounts are allowed.
+     */
+    public bool $allowChildren;
 
     /**
      * The count associated with this `TriggeredEmail`. This is defined by the trigger, and could be something like a number of days, months, gigabytes, etc.
@@ -49,7 +52,7 @@ class TriggeredEmail extends BaseResource implements IdentityInterface
     public bool $protected;
 
     /**
-     * The trigger for this email.
+     * The trigger for this message.
      */
     public string $trigger;
 
@@ -62,6 +65,12 @@ class TriggeredEmail extends BaseResource implements IdentityInterface
      * The type of a `Job`.
      */
     public ?JobType $jobType;
+
+    /**
+     * A categorization of a message by type.
+     * @var \SeanKndy\SonarApi\Resources\MessageCategory[]
+     */
+    public array $messageCategories;
 
     /**
      * A categorization of an `Email` by type.

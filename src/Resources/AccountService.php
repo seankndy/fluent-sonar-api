@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class AccountService extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -44,7 +42,7 @@ class AccountService extends BaseResource implements IdentityInterface
     public ?string $nextBillDate;
 
     /**
-     * The number of times this particular service has been billed to the customer. This is only used for expiring services.
+     * The number of billing cycles that have already been consumed by this particular service. This is only used for expiring services. NOTE: Typically this is the number of times billed but the value may be modified manually to adjust service expiration. See also the the `ExpiringServiceDetail` `times_to_run` field.
      */
     public ?int $numberOfTimesBilled;
 
@@ -94,6 +92,12 @@ class AccountService extends BaseResource implements IdentityInterface
     public ?Package $package;
 
     /**
+     * An Adtran Mosaic audit record.
+     * @var \SeanKndy\SonarApi\Resources\AdtranMosaicAudit[]
+     */
+    public array $adtranMosaicAudits;
+
+    /**
      * The value of a `ServiceMetadata` field, as it relates to a specific `Service` on a specific `Account`.
      * @var \SeanKndy\SonarApi\Resources\ServiceMetadataValue[]
      */
@@ -104,6 +108,24 @@ class AccountService extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\AccountVoiceServiceDetail[]
      */
     public array $accountVoiceServiceDetails;
+
+    /**
+     * An account Adtran Mosaic service detail.
+     * @var \SeanKndy\SonarApi\Resources\AccountAdtranMosaicServiceDetail[]
+     */
+    public array $accountAdtranMosaicServiceDetails;
+
+    /**
+     * Holds information for provisioning service on Calix devices.
+     * @var \SeanKndy\SonarApi\Resources\AccountCalixServiceDetail[]
+     */
+    public array $accountCalixServiceDetails;
+
+    /**
+     * An inventory item.
+     * @var \SeanKndy\SonarApi\Resources\InventoryItem[]
+     */
+    public array $inventoryItems;
 
     /**
      * A log entry.

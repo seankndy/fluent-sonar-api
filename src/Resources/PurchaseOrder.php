@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class PurchaseOrder extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -61,7 +59,7 @@ class PurchaseOrder extends BaseResource implements IdentityInterface
     /**
      * Whether or not the purchase order has been marked as being paid.
      */
-    public bool $isPaid;
+    public ?bool $isPaid;
 
     /**
      * The date and time that the inventory item status last changed.
@@ -134,11 +132,6 @@ class PurchaseOrder extends BaseResource implements IdentityInterface
     public ?OrderGroup $orderGroup;
 
     /**
-     * A tax.
-     */
-    public ?Tax $tax;
-
-    /**
      * A line item on a purchase order.
      * @var \SeanKndy\SonarApi\Resources\PurchaseOrderItem[]
      */
@@ -161,6 +154,12 @@ class PurchaseOrder extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\Notification[]
      */
     public array $notifications;
+
+    /**
+     * A file.
+     * @var \SeanKndy\SonarApi\Resources\File[]
+     */
+    public array $files;
 
     /**
      * A log entry.

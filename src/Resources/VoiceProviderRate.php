@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class VoiceProviderRate extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -32,11 +30,6 @@ class VoiceProviderRate extends BaseResource implements IdentityInterface
      * The rate that is charged to a customer.
      */
     public float $chargeRate;
-
-    /**
-     * The country of the rate.
-     */
-    public string $country;
 
     /**
      * The description for the rate.

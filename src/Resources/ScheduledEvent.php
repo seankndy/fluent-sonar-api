@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class ScheduledEvent extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -34,7 +32,7 @@ class ScheduledEvent extends BaseResource implements IdentityInterface
     public bool $complete;
 
     /**
-     * A date and time
+     * The date and time in UTC.
      */
     public \DateTime $datetime;
 
@@ -62,6 +60,18 @@ class ScheduledEvent extends BaseResource implements IdentityInterface
      * A customer account.
      */
     public ?Account $account;
+
+    /**
+     * The `AccountVoiceServiceDetail` records used to configure a voice service when a `ScheduledEvent` is executed.
+     * @var \SeanKndy\SonarApi\Resources\ScheduledEventAccountVoiceServiceDetail[]
+     */
+    public array $scheduledEventAccountVoiceServiceDetails;
+
+    /**
+     * The `AccountCalixServiceDetail` records used to configure the Calix integrations when a `ScheduledEvent` is executed.
+     * @var \SeanKndy\SonarApi\Resources\ScheduledEventAccountCalixServiceDetail[]
+     */
+    public array $scheduledEventAccountCalixServiceDetails;
 
     /**
      * A log entry.

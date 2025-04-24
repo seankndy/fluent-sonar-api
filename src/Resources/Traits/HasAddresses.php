@@ -6,6 +6,12 @@ use SeanKndy\SonarApi\Resources\Address;
 
 trait HasAddresses
 {
+    /**
+     * A geographical address.
+     * @var \SeanKndy\SonarApi\Resources\Address[]
+     */
+    public array $addresses;
+
     public function physicalAddress(): ?Address
     {
         foreach ($this->addresses as $address) {

@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class InventoryModelField extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -68,6 +66,12 @@ class InventoryModelField extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\InventoryModelFieldData[]
      */
     public array $inventoryModelFieldData;
+
+    /**
+     * An entity which maps an inventory model field to a vendor specific integration field type (ie serial number)
+     * @var \SeanKndy\SonarApi\Resources\IntegrationFieldMapping[]
+     */
+    public array $integrationFieldMappings;
 
     /**
      * A note.

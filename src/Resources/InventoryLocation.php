@@ -2,14 +2,10 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
-use SeanKndy\SonarApi\Resources\Traits\HasAddresses;
-
 class InventoryLocation extends BaseResource implements IdentityInterface
 {
-    use HasAddresses;
-    use HasIdentity;
+    use Traits\HasIdentity;
+    use Traits\HasAddresses;
 
     /**
      * The date and time this entity was created.
@@ -35,12 +31,6 @@ class InventoryLocation extends BaseResource implements IdentityInterface
      * A descriptive name.
      */
     public string $name;
-
-    /**
-     * A geographical address.
-     * @var \SeanKndy\SonarApi\Resources\Address[]
-     */
-    public array $addresses;
 
     /**
      * An inventory item.
@@ -89,5 +79,11 @@ class InventoryLocation extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\PurchaseOrder[]
      */
     public array $purchaseOrders;
+
+    /**
+     * Defines the minimum and maximum of an inventory level per location per inventory model.
+     * @var \SeanKndy\SonarApi\Resources\InventoryModelMinMax[]
+     */
+    public array $inventoryModelMinMaxes;
 
 }

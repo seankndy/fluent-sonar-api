@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class AccountBillingParameter extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -24,12 +22,27 @@ class AccountBillingParameter extends BaseResource implements IdentityInterface
     public int $accountId;
 
     /**
+     * Whether or not to aggregate invoice taxes instead of printing with each charge.
+     */
+    public bool $aggregateInvoiceTaxes;
+
+    /**
+     * Whether or not to aggregate linked debits on Anchor invoices.
+     */
+    public bool $aggregateLinkedDebits;
+
+    /**
+     * Determines if delinquency settings on an Anchor default is applied only to the Anchor account or the Linked accounts as well.
+     */
+    public ?string $anchorDelinquencyLogic;
+
+    /**
      * If `invoice_day` is not null, this allows you to select whether `auto_pay_days` is calculated from the billing day, or the invoice day.
      */
     public string $autoPayDay;
 
     /**
-     * The number of days after `auto_pay_day` that auto pay runs for an invoice.
+     * The number of days after `auto_pay_day` that autopay runs for an invoice.
      */
     public int $autoPayDays;
 
@@ -49,9 +62,19 @@ class AccountBillingParameter extends BaseResource implements IdentityInterface
     public string $billMode;
 
     /**
+     * The ID of a BillingDefault.
+     */
+    public ?int $billingDefaultId;
+
+    /**
      * If `switch_status_after_delinquency` is `true`, then this is the number of days of delinquency to allow before the status switch.
      */
     public ?int $daysOfDelinquencyForStatusSwitch;
+
+    /**
+     * Determines if the billing parameters apply by account type or for anchor / linked types.
+     */
+    public string $defaultFor;
 
     /**
      * If `switch_status_after_delinquency` is true, this is the account status that the account will be moved into after `days_of_delinquency_for_status_switch` days of delinquency.
@@ -127,6 +150,11 @@ class AccountBillingParameter extends BaseResource implements IdentityInterface
      * A customer account.
      */
     public ?Account $account;
+
+    /**
+     * Default billing settings that are applied to some accounts on creation.
+     */
+    public ?BillingDefault $billingDefault;
 
     /**
      * A log entry.

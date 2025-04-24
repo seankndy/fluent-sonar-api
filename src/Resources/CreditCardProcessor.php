@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class CreditCardProcessor extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -64,6 +62,11 @@ class CreditCardProcessor extends BaseResource implements IdentityInterface
     public bool $mastercard;
 
     /**
+     * Enables processor specific `Mail Or Telephone Order` functionality. Currently only applicable for `Stripe`.
+     */
+    public bool $motoEnabled;
+
+    /**
      * Whether or not this is the primary type of entity.
      */
     public bool $primary;
@@ -99,6 +102,18 @@ class CreditCardProcessor extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\CreditCard[]
      */
     public array $creditCards;
+
+    /**
+     * A disbursement.
+     * @var \SeanKndy\SonarApi\Resources\Disbursement[]
+     */
+    public array $disbursements;
+
+    /**
+     * A company you do business as.
+     * @var \SeanKndy\SonarApi\Resources\Company[]
+     */
+    public array $companies;
 
     /**
      * A log entry.

@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class VendorItem extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -61,7 +59,7 @@ class VendorItem extends BaseResource implements IdentityInterface
     /**
      * The ID of the vendor that sells this item
      */
-    public int $vendorId;
+    public ?int $vendorId;
 
     /**
      * The ID of the entity that is referred to by this vendor item.

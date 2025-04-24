@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class JobType extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -27,6 +25,16 @@ class JobType extends BaseResource implements IdentityInterface
      * If this is set, any `Job` using this `JobType` that is completed unsuccessfully while associated with an `Account` will change the `Account` to this `AccountStatus`.
      */
     public ?int $accountStatusIdFailure;
+
+    /**
+     * Completion ticket action.
+     */
+    public string $actionOnCompletion;
+
+    /**
+     * Failure ticket action.
+     */
+    public string $actionOnFailure;
 
     /**
      * Whether or not this `JobType` is valid for all `Companies`.
@@ -52,6 +60,11 @@ class JobType extends BaseResource implements IdentityInterface
      * The default length for a `Job` created using this `JobType`.
      */
     public int $defaultLengthInMinutes;
+
+    /**
+     * If this is set, any `Job` using this `JobType` that is completed successfully while associated with an `Account` will trigger the disconnection of the `Account`.
+     */
+    public ?bool $disconnectsAccount;
 
     /**
      * Whether or not this is enabled.
@@ -82,6 +95,16 @@ class JobType extends BaseResource implements IdentityInterface
      * If this is set, any `Job` using this `JobType` that is completed unsuccessfully will create a `Ticket` and assign it to this `TicketGroup`.
      */
     public ?int $ticketGroupIdFailure;
+
+    /**
+     * Ticket status on completion.
+     */
+    public string $ticketStatusOnCompletion;
+
+    /**
+     * Ticket status on failure.
+     */
+    public string $ticketStatusOnFailure;
 
     /**
      * A service.
@@ -138,10 +161,10 @@ class JobType extends BaseResource implements IdentityInterface
     public array $jobs;
 
     /**
-     * An `Email` that is sent when a particular event occurs.
-     * @var \SeanKndy\SonarApi\Resources\TriggeredEmail[]
+     * A message that is sent when a specific event occurs.
+     * @var \SeanKndy\SonarApi\Resources\TriggeredMessage[]
      */
-    public array $triggeredEmails;
+    public array $triggeredMessages;
 
     /**
      * A note.

@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class MassEmail extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -27,6 +25,11 @@ class MassEmail extends BaseResource implements IdentityInterface
      * The name to send from when using this email message. If `null`, then the system default will be used.
      */
     public string $fromName;
+
+    /**
+     * A short sentence that will be shown as a preview in compatible email clients.
+     */
+    public ?string $inboxPreview;
 
     /**
      * The message.

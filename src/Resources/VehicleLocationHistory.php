@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class VehicleLocationHistory extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -27,6 +25,31 @@ class VehicleLocationHistory extends BaseResource implements IdentityInterface
      * A decimal longitude.
      */
     public string $longitude;
+
+    /**
+     * Odometer without unit of measure.
+     */
+    public ?int $odometer;
+
+    /**
+     * Unit of measure for odometer.
+     */
+    public ?string $odometerUm;
+
+    /**
+     * Speed without unit of measure.
+     */
+    public ?int $speed;
+
+    /**
+     * Unit of measure for speed.
+     */
+    public ?string $speedUm;
+
+    /**
+     * The status.
+     */
+    public ?string $status;
 
     /**
      * The ID of a `Vehicle`.

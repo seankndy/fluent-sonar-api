@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class VoiceServiceDetail extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -24,14 +22,14 @@ class VoiceServiceDetail extends BaseResource implements IdentityInterface
     public int $billingFrequency;
 
     /**
-     * The cost per minute for local calls.
+     * The cost per minute for local calls, in thousandths of the smallest currency value (e.g. cents, pence, pesos.).
      */
-    public ?int $costPerMinuteForLocalCalls;
+    public ?int $costPerMinuteLocalInThousandths;
 
     /**
-     * The cost per minute for long distance calls.
+     * The cost per minute for long distance calls, in thousandths of the smallest currency value (e.g. cents, pence, pesos.).
      */
-    public ?int $costPerMinuteForLongDistanceCalls;
+    public ?int $costPerMinuteLongDistanceInThousandths;
 
     /**
      * A two character country code.
@@ -44,9 +42,9 @@ class VoiceServiceDetail extends BaseResource implements IdentityInterface
     public int $firstIntervalInSeconds;
 
     /**
-     * If a customer has a toll free number, this is the rate charged to them for inbound calls.
+     * If a customer has a toll free number, this is the rate charged to them for inbound calls, in thousandths of the smallest currency value (e.g. cents, pence, pesos.).
      */
-    public int $inboundTollFreeRatePerMinute;
+    public int $inboundTollFreeRatePerMinuteInThousandths;
 
     /**
      * The quantity of free local minutes provided, if `unlimited_local_minutes` is false.
@@ -59,9 +57,19 @@ class VoiceServiceDetail extends BaseResource implements IdentityInterface
     public ?int $longDistanceMinutes;
 
     /**
+     * Hide parameters of this service on customer invoices/statements and in the customer portal.
+     */
+    public bool $rollupGenericParameters;
+
+    /**
      * The ID of a Service.
      */
     public int $serviceId;
+
+    /**
+     * Indicates if Call Detail Records (CDRs) for this service should be displayed on an invoice.
+     */
+    public bool $showCallDetailRecordsOnInvoice;
 
     /**
      * After the `first_interval_in_seconds` time is exceeded, this is the minimum amount of subsequent time. For example, if `first_interval_in_seconds` is 30, and `sub_interval_in_seconds` is 6, then a 31 second call would be charged at 36 seconds, and a 37 second call would be charged at 42 seconds.

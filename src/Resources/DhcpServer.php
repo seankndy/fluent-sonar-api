@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class DhcpServer extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -100,6 +98,12 @@ class DhcpServer extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\Note[]
      */
     public array $notes;
+
+    /**
+     * A `Notification`.
+     * @var \SeanKndy\SonarApi\Resources\Notification[]
+     */
+    public array $notifications;
 
     /**
      * A log entry.

@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class ScheduleAddress extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -57,6 +55,11 @@ class ScheduleAddress extends BaseResource implements IdentityInterface
      * A state, province, or other country subdivision.
      */
     public ?string $subdivision;
+
+    /**
+     * The timezone you want times in the system displayed in.
+     */
+    public ?string $timezone;
 
     /**
      * The type.

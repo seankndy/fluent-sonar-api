@@ -14,4 +14,9 @@ class UserPreference extends BaseResource
      */
     public ?bool $navigationExpanded;
 
+    /**
+     * Saved settings for the web application. This field is meant to be user configurable.
+     */
+    public ?string $uiPreferences;
+
 }

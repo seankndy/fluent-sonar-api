@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class PurchaseOrderItem extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -31,7 +29,7 @@ class PurchaseOrderItem extends BaseResource implements IdentityInterface
     /**
      * The order this item is shown in a list.
      */
-    public int $listOrder;
+    public ?int $listOrder;
 
     /**
      * A descriptive name.
@@ -74,11 +72,6 @@ class PurchaseOrderItem extends BaseResource implements IdentityInterface
     public int $vendorItemId;
 
     /**
-     * A tax.
-     */
-    public ?Tax $tax;
-
-    /**
      * A purchase order for items from a third party vendor.
      */
     public ?PurchaseOrder $purchaseOrder;
@@ -95,10 +88,22 @@ class PurchaseOrderItem extends BaseResource implements IdentityInterface
     public array $inventoryItems;
 
     /**
+     * A tax.
+     * @var \SeanKndy\SonarApi\Resources\Tax[]
+     */
+    public array $taxes;
+
+    /**
      * A note.
      * @var \SeanKndy\SonarApi\Resources\Note[]
      */
     public array $notes;
+
+    /**
+     * Data entered into a `CustomField`.
+     * @var \SeanKndy\SonarApi\Resources\CustomFieldData[]
+     */
+    public array $customFieldData;
 
     /**
      * A log entry.

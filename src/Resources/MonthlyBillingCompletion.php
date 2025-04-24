@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class MonthlyBillingCompletion extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -44,10 +42,10 @@ class MonthlyBillingCompletion extends BaseResource implements IdentityInterface
     public ?Invoice $invoice;
 
     /**
-     * A call data record (CDR).
-     * @var \SeanKndy\SonarApi\Resources\CallDataRecord[]
+     * A call detail record (CDR).
+     * @var \SeanKndy\SonarApi\Resources\CallDetailRecord[]
      */
-    public array $callDataRecords;
+    public array $callDetailRecords;
 
     /**
      * A note.

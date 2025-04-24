@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class EmailDomain extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -24,9 +22,24 @@ class EmailDomain extends BaseResource implements IdentityInterface
     public bool $dkim;
 
     /**
+     * The DNS requirements for domain validation.
+     */
+    public ?string $dnsRequirements;
+
+    /**
      * A domain name.
      */
     public string $domain;
+
+    /**
+     * The domain ID from the email provider.
+     */
+    public ?int $providerDomainId;
+
+    /**
+     * Indicates that the domain has been verified for migration.
+     */
+    public ?bool $readyForMigration;
 
     /**
      * Whether or not the SPF record is valid.

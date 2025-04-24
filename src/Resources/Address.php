@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class Address extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -19,6 +17,11 @@ class Address extends BaseResource implements IdentityInterface
     public \DateTime $updatedAt;
 
     /**
+     * Address status ID.
+     */
+    public ?int $addressStatusId;
+
+    /**
      * The ID of the entity that owns this address.
      */
     public ?int $addressableId;
@@ -29,9 +32,34 @@ class Address extends BaseResource implements IdentityInterface
     public ?string $addressableType;
 
     /**
+     * The address ID for the Anchor address
+     */
+    public ?int $anchorAddressId;
+
+    /**
+     * The attainable download speed in kilobits per second.
+     */
+    public ?int $attainableDownloadSpeed;
+
+    /**
+     * The attainable upload speed in kilobits per second.
+     */
+    public ?int $attainableUploadSpeed;
+
+    /**
      * Avalara PCode.
      */
     public ?string $avalaraPcode;
+
+    /**
+     * The ID of a BillingDefault.
+     */
+    public ?int $billingDefaultId;
+
+    /**
+     * The year used for calculating fips and census tract information.
+     */
+    public ?int $censusYear;
 
     /**
      * A city.
@@ -52,6 +80,16 @@ class Address extends BaseResource implements IdentityInterface
      * Only used in the USA, this is the census tract information used for calculating things like FCC Form 477.
      */
     public ?string $fips;
+
+    /**
+     * Identifies the source used to obtain the FIPS code
+     */
+    public ?string $fipsSource;
+
+    /**
+     * Whether or not this address is an anchor
+     */
+    public bool $isAnchor;
 
     /**
      * A decimal latitude.
@@ -84,6 +122,11 @@ class Address extends BaseResource implements IdentityInterface
     public ?string $subdivision;
 
     /**
+     * The timezone you want times in the system displayed in.
+     */
+    public ?string $timezone;
+
+    /**
      * The type.
      */
     public string $type;
@@ -92,6 +135,21 @@ class Address extends BaseResource implements IdentityInterface
      * A ZIP or postal code.
      */
     public ?string $zip;
+
+    /**
+     * The serviceable address that is a anchor of this linked account.
+     */
+    public ?Address $anchorAddress;
+
+    /**
+     * An address status.
+     */
+    public ?AddressStatus $addressStatus;
+
+    /**
+     * Default billing settings that are applied to some accounts on creation.
+     */
+    public ?BillingDefault $billingDefault;
 
     /**
      * An inventory item.
@@ -118,6 +176,12 @@ class Address extends BaseResource implements IdentityInterface
     public array $customFieldData;
 
     /**
+     * A file.
+     * @var \SeanKndy\SonarApi\Resources\File[]
+     */
+    public array $files;
+
+    /**
      * A log entry.
      * @var \SeanKndy\SonarApi\Resources\Log[]
      */
@@ -128,6 +192,12 @@ class Address extends BaseResource implements IdentityInterface
      * @var \SeanKndy\SonarApi\Resources\AccessLog[]
      */
     public array $accessLogs;
+
+    /**
+     * A list of linked addresses that this address is a anchor for.
+     * @var \SeanKndy\SonarApi\Resources\Address[]
+     */
+    public array $linkedAddresses;
 
     /**
      * A `ServiceableAddressAccountAssignmentHistory` for accounts and addresses.
@@ -142,9 +212,21 @@ class Address extends BaseResource implements IdentityInterface
     public array $disconnectionLogs;
 
     /**
+     * An expected change of serviceable address account assignment.
+     * @var \SeanKndy\SonarApi\Resources\ServiceableAddressAccountAssignmentFuture[]
+     */
+    public array $serviceableAddressAccountAssignmentFutures;
+
+    /**
      * A TowerCoverage submission.
      */
     public ?TowercoverageSubmission $towercoverageSubmission;
+
+    /**
+     * Network site serviceable address list.
+     * @var \SeanKndy\SonarApi\Resources\NetworkSiteServiceableAddressList[]
+     */
+    public array $networkSiteServiceableAddressLists;
 
     public function __toString(): string
     {

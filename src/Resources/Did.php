@@ -2,11 +2,9 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
 class Did extends BaseResource implements IdentityInterface
 {
-    use HasIdentity;
+    use Traits\HasIdentity;
 
     /**
      * The date and time this entity was created.
@@ -19,19 +17,14 @@ class Did extends BaseResource implements IdentityInterface
     public \DateTime $updatedAt;
 
     /**
-     * A two character country code.
-     */
-    public string $country;
-
-    /**
      * The number.
      */
     public string $number;
 
     /**
-     * A state, province, or other country subdivision.
+     * The ID of a `RateCenter`.
      */
-    public ?string $subdivision;
+    public ?int $rateCenterId;
 
     /**
      * The ID of a `VoiceProvider`.
@@ -42,6 +35,11 @@ class Did extends BaseResource implements IdentityInterface
      * A `VoiceProvider`.
      */
     public ?VoiceProvider $voiceProvider;
+
+    /**
+     * A rate center.
+     */
+    public ?RateCenter $rateCenter;
 
     /**
      * A direct inward dial (DID) assignment.

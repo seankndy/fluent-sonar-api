@@ -2,14 +2,10 @@
 
 namespace SeanKndy\SonarApi\Resources;
 
-use SeanKndy\SonarApi\Resources\Traits\HasIdentity;
-
-use SeanKndy\SonarApi\Resources\Traits\HasAddresses;
-
 class CreditCard extends BaseResource implements IdentityInterface
 {
-    use HasAddresses;
-    use HasIdentity;
+    use Traits\HasIdentity;
+    use Traits\HasAddresses;
 
     /**
      * The date and time this entity was created.
@@ -30,6 +26,11 @@ class CreditCard extends BaseResource implements IdentityInterface
      * Whether or not this payment method is enabled for automatic payments.
      */
     public bool $auto;
+
+    /**
+     * The type of payment made by the card (e.g. Credit, Debit, Prepaid).
+     */
+    public ?string $cardPaymentType;
 
     /**
      * The ID of a CreditCardProcessor.
@@ -80,12 +81,6 @@ class CreditCard extends BaseResource implements IdentityInterface
      * A company that processes `CreditCard` transactions.
      */
     public ?CreditCardProcessor $creditCardProcessor;
-
-    /**
-     * A geographical address.
-     * @var \SeanKndy\SonarApi\Resources\Address[]
-     */
-    public array $addresses;
 
     /**
      * A note.
