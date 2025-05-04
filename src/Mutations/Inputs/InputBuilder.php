@@ -28,7 +28,7 @@ class InputBuilder
     {
         $data = [];
         foreach ($this->data as $var => $value) {
-            if (\is_callable($value)) {
+            if ($value instanceof \Closure) {
                 $data[$var] = $value(new self)->build();
             } else {
                 $data[$var] = $value;
